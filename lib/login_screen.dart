@@ -62,6 +62,7 @@ class LoginPage extends StatelessWidget {
 
             ElevatedButton(
               onPressed: () async {
+
                 final NaverLoginResult res = await FlutterNaverLogin.logIn();
                 if (res.status == NaverLoginStatus.loggedIn) {
                   print('Login successful!');
