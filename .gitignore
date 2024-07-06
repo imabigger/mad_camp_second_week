@@ -42,3 +42,9 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+#서버관련
+/server
+
+# env files
+.env
