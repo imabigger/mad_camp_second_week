@@ -17,6 +17,17 @@
         <meta-data
             android:name="com.naver.sdk.clientName"
             android:value="@string/client_name" />
+        <!-- 네이버 로그인 커스텀 URL 스킴 설정 -->
+        <activity
+            android:name="com.nhn.android.naverlogin.ui.NaverLoginActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="@string/client_id" android:host="naverlogin" />
+            </intent-filter>
+        </activity>
 
         <!-- 카카오 로그인 커스텀 URL 스킴 설정 -->
         <activity
@@ -27,8 +38,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <!-- "kakao${YOUR_NATIVE_APP_KEY}://oauth" 형식의 앱 실행 스킴 설정 -->
-                <!-- 카카오 로그인 Redirect URI -->
+
                 <data android:scheme="@string/kakao_client_key" android:host="oauth"/>
             </intent-filter>
         </activity>

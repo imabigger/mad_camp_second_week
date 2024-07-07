@@ -18,19 +18,18 @@ import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
 
-  // await dotenv.load(fileName: ".env");
-  //
-  // // runApp() 호출 전 Flutter SDK 초기화
-  // KakaoSdk.init(
-  //   nativeAppKey: dotenv.env['kakao_NativeAppKey']!,
-  // );
-  //
-  // FlutterNaverLogin.initSdk(
-  //     clientId: dotenv.env['naver_ClientID']!,
-  //     clientName: dotenv.env['naver_ClientSecret']!,
-  //     clientSecret: dotenv.env['naver_ClientName']!
-  // );
+  // runApp() 호출 전 Flutter SDK 초기화
+  KakaoSdk.init(
+    nativeAppKey: dotenv.env['kakao_NativeAppKey']!,
+  );
+
+  FlutterNaverLogin.initSdk(
+      clientId: dotenv.env['naver_ClientID']!,
+      clientName: dotenv.env['naver_ClientName']!,
+      clientSecret: dotenv.env['naver_ClientSecret']!
+  );
 
   runApp(MyApp());
 }
