@@ -1,24 +1,5 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Community Record Page',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      ),
-      home: const MyCommunityRecordPage(),
-    );
-  }
-}
-
 class MyCommunityRecordPage extends StatefulWidget {
   const MyCommunityRecordPage({super.key});
 

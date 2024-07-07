@@ -1,24 +1,5 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'SearchDetail Page',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      ),
-      home: const SearchDetailPage(title: '쌀'),
-    );
-  }
-}
-
 class SearchDetailPage extends StatelessWidget {
   final String title;
 

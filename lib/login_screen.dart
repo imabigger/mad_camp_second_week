@@ -5,7 +5,6 @@ import 'dart:convert';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 
 
-
 class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
