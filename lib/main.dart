@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: const HomeScreen(), //여기 수정해서 페이지 잘 되었나 보기
+      home: const MyPrivateInfoSettingPage(), //여기 수정해서 페이지 잘 되었나 보기
     );
   }
 }
