@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:kaist_summer_camp_second_week/search/screen/search.dart';
+import 'package:kaist_summer_camp_second_week/search/screen/search_result.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -51,6 +53,11 @@ class HomeScreen extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
                 ),
+                onTap: () {
+                  Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => SearchPage()),
+                  );
+                },
               ),
             ),
             const SizedBox(height: 20),
@@ -61,15 +68,15 @@ class HomeScreen extends StatelessWidget {
                 crossAxisCount: 4,
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                children: const [
-                  CategoryIcon(label: '전체 보기', imagePath: 'assets/i_gridview.png'),
-                  CategoryIcon(label: '곡물', imagePath: 'assets/i_crop.png'),
-                  CategoryIcon(label: '채소', imagePath: 'assets/i_vege.png'),
-                  CategoryIcon(label: '과일', imagePath: 'assets/i_fruit.png'),
-                  CategoryIcon(label: '꽃', imagePath: 'assets/i_flower.png'),
-                  CategoryIcon(label: '허브', imagePath:  'assets/i_herb.png'),
-                  CategoryIcon(label: '견과류', imagePath: 'assets/i_nuts.png'),
-                  CategoryIcon(label: '다육식물', imagePath: 'assets/i_cactus.png'),
+                children: [
+                  CategoryIcon(label: '전체 보기', imagePath: 'assets/i_gridview.png', onTap: () => _navigateToSearchResult(context, '전체 보기'),),
+                  CategoryIcon(label: '곡물', imagePath: 'assets/i_crop.png', onTap: () => _navigateToSearchResult(context, '곡물'),),
+                  CategoryIcon(label: '채소', imagePath: 'assets/i_vege.png', onTap: () => _navigateToSearchResult(context, '채소'),),
+                  CategoryIcon(label: '과일', imagePath: 'assets/i_fruit.png', onTap: () => _navigateToSearchResult(context, '과일'),),
+                  CategoryIcon(label: '꽃', imagePath: 'assets/i_flower.png', onTap: () => _navigateToSearchResult(context, '꽃'),),
+                  CategoryIcon(label: '허브', imagePath:  'assets/i_herb.png', onTap: () => _navigateToSearchResult(context, '허브'),),
+                  CategoryIcon(label: '견과류', imagePath: 'assets/i_nuts.png', onTap: () => _navigateToSearchResult(context, '견과류'),),
+                  CategoryIcon(label: '다육식물', imagePath: 'assets/i_cactus.png', onTap: () => _navigateToSearchResult(context, '다육식물'),),
                 ],
               ),
             ),
@@ -130,34 +137,46 @@ class HomeScreen extends StatelessWidget {
 class CategoryIcon extends StatelessWidget {
   final String label;
   final String imagePath;
+  final VoidCallback onTap;
 
-  const CategoryIcon({required this.label, required this.imagePath});
+  const CategoryIcon({Key? key, required this.label, required this.imagePath, required this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 60,
-          height: 60,
-          decoration: BoxDecoration(
-            color: Colors.green.shade100,
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(15),
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              color: Colors.green.shade100,
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Image.asset(imagePath), // 이미지를 표시
+            ),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Image.asset(imagePath), // 이미지를 표시
-          ),
-        ),
-        const SizedBox(height: 5),
-        Text(label, style: const TextStyle(fontSize: 12)),
-      ],
+          const SizedBox(height: 5),
+          Text(label, style: const TextStyle(fontSize: 12)),
+        ],
+      ),
     );
   }
 }
 
+void _navigateToSearchResult(BuildContext context, String label) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => SearchResultPage(label: label),
+    ),
+  );
+}
 
 class SectionTitle extends StatelessWidget {
   final String title;

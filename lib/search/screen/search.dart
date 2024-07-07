@@ -14,7 +14,7 @@ class SearchPage extends StatelessWidget {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () {
-              // 화살표 버튼 클릭 시 동작 추가
+              Navigator.pop(context); // 화살표 버튼 클릭 시 동작 추가
             },
           ),
           title: Padding(
@@ -31,6 +31,7 @@ class SearchPage extends StatelessWidget {
                 fillColor: Colors.grey[200],
                 contentPadding: const EdgeInsets.symmetric(vertical: 10.0),
               ),
+              // onTap: () , -> 누르면 뭐지?
             ),
           ),
         ),

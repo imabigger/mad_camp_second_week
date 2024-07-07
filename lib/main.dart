@@ -3,7 +3,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:kaist_summer_camp_second_week/community/screen/community.dart';
 import 'package:kaist_summer_camp_second_week/community/screen/community_write.dart';
+import 'package:kaist_summer_camp_second_week/home_screen.dart';
 import 'package:kaist_summer_camp_second_week/login_screen.dart';
+import 'package:kaist_summer_camp_second_week/search/model/plant_model.dart';
 import 'package:kaist_summer_camp_second_week/user/screen/my_accountsetting.dart';
 import 'package:kaist_summer_camp_second_week/user/screen/my_communityrecord.dart';
 import 'package:kaist_summer_camp_second_week/auth/screen/my_login.dart';
@@ -44,7 +46,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: const SearchResultPage(), //여기 수정해서 페이지 잘 되었나 보기
+      home: HomeScreen(), //여기 수정해서 페이지 잘 되었나 보기, SearchDetailPage에서는 클릭한 거 name으로 받아서 plants.[name]으로 부르기
     );
   }
 }
