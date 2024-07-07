@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kaist_summer_camp_second_week/search/model/plant_model.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search.dart';
+import 'package:kaist_summer_camp_second_week/search/screen/search_detail.dart';
 
 class SearchResultPage extends StatefulWidget {
   final String label;
@@ -56,6 +57,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
   @override
   Widget build(BuildContext context) {
     List<String> plantList = plants[currentLabel]?.keys.toList() ?? [];
+    List<Plant> objList = plants[currentLabel]?.values.toList() ?? [];
 
     return Scaffold(
       appBar: AppBar(
@@ -112,6 +114,12 @@ class _SearchResultPageState extends State<SearchResultPage> {
                   children: [
                     ListTile(
                       title: Text(plantList[index]),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => SearchDetailPage(plant: objList[index]))
+                        );
+                      },
                     ),
                     if (index < plantList.length - 1) const Divider(),
                   ],
