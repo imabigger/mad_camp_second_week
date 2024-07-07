@@ -5,7 +5,6 @@ import 'dart:convert';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 
 
-
 class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -63,17 +62,107 @@ class LoginPage extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
 
-                final NaverLoginResult res = await FlutterNaverLogin.logIn();
-                if (res.status == NaverLoginStatus.loggedIn) {
-                  print('Login successful!');
-                  print('Access token: ${res.accessToken}');
-                  print('User id: ${res.account.name}');
-                  print('Email: ${res.account.email}');
-                } else {
-                  print('Login failed');
+                try {
+                  final NaverLoginResult res = await FlutterNaverLogin.logIn();
+
+                  if (res.status == NaverLoginStatus.loggedIn) {
+
+                    var response = await http.post(
+                      Uri.parse('http://172.10.7.138/auth/naver'),
+                      headers: {'Content-Type': 'application/json'},
+                      body: jsonEncode({
+                        'accessToken': res.accessToken.tokenType,
+                        'id': res.account.id,
+                        'nickname': res.account.name,
+                        'email': res.account.email,
+                      }),
+                    );
+
+
+                    if (response.statusCode == 200) {
+                      // 로그인 성공 처리
+                      print('Login successful');
+                      print(response.body);
+                    } else {
+                      // 로그인 실패 처리
+                      print('Login failed');
+                      print(response.body);
+                    }
+                    
+                  } else {
+                    print(res.errorMessage);
+                    print('Login failed');
+                  }
+                } catch (e) {
+                  print('Error during login: $e');
                 }
               },
               child: Text('Login with Naver'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final testEmail = 'bigger@gmail.com';
+                final testPassword = '1234';
+
+
+                try {
+                  var response = await http.post(
+                    Uri.parse('http://172.10.7.138/register'),
+                    headers: {'Content-Type': 'application/json'},
+                    body: jsonEncode({
+                      'username': 'testUser',
+                      'password': testPassword,
+                      'email': testEmail,
+                    }),
+                  );
+
+                  if (response.statusCode == 201) {
+                    // 로그인 성공 처리
+                    print('register successful');
+                    print(response.body);
+                  } else {
+                    // 로그인 실패 처리
+                    print('register failed');
+                    print(response.body);
+                  }
+
+                } catch (e) {
+                  print('Error during login: $e');
+                }
+              },
+              child: Text('Register with Email'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final testEmail = 'bigger@gmail.com';
+                final testPassword = '1234';
+
+
+                try {
+                  var response = await http.post(
+                    Uri.parse('http://172.10.7.138/login'),
+                    headers: {'Content-Type': 'application/json'},
+                    body: jsonEncode({
+                      'email': testEmail,
+                      'password': testPassword,
+                    }),
+                  );
+
+                  if (response.statusCode == 200) {
+                    // 로그인 성공 처리
+                    print('login successful');
+                    print(response.body);
+                  } else {
+                    // 로그인 실패 처리
+                    print('login failed');
+                    print(response.body);
+                  }
+
+                } catch (e) {
+                  print('Error during login: $e');
+                }
+              },
+              child: Text('Login with Email'),
             ),
           ],
         ),

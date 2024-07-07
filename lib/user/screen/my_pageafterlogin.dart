@@ -1,24 +1,5 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'My Page After Login',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      ),
-      home: const MyPageAfterLogin(),
-    );
-  }
-}
-
 class MyPageAfterLogin extends StatelessWidget {
   const MyPageAfterLogin({super.key});
 
