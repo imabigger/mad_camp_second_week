@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:kaist_summer_camp_second_week/auth/provider/auth_provider.dart';
 
-class MyAccountSettingPage extends StatelessWidget {
+class MyAccountSettingPage extends ConsumerWidget {
   const MyAccountSettingPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -106,6 +109,7 @@ class MyAccountSettingPage extends StatelessWidget {
               ),
               onTap: () {
                 // 개인 정보 관리 클릭 시 동작 추가
+                context.go('/user/setting/private');
               },
             ),
             const Divider(),
@@ -123,6 +127,8 @@ class MyAccountSettingPage extends StatelessWidget {
                 TextButton(
                   onPressed: () {
                     // 로그아웃 버튼 클릭 시 동작 추가
+                    ref.read(authProvider.notifier).logOut();
+                    context.go('/auth');
                   },
                   child: const Text('로그아웃', style: TextStyle(color: Colors.grey)),
                 ),

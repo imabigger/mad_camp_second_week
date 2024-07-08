@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:kaist_summer_camp_second_week/auth/provider/auth_provider.dart';
 
-class MyPageAfterLogin extends StatelessWidget {
+class MyPageAfterLogin extends ConsumerWidget {
   const MyPageAfterLogin({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.read(authProvider).user;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -38,12 +43,12 @@ class MyPageAfterLogin extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      '홍길동 고객님',
+                    Text(
+                      '${user!.username} 고객님',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
-                    const Text(
-                      'example@nongdam.com',
+                    Text(
+                      user.email,
                       style: TextStyle(color: Colors.grey),
                     ),
                   ],
@@ -52,6 +57,7 @@ class MyPageAfterLogin extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () {
                     // 계정 설정 버튼 클릭 시 동작 추가
+                    context.go('/user/setting');
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white, backgroundColor: Colors.green,
@@ -110,6 +116,7 @@ class MyPageAfterLogin extends StatelessWidget {
             GestureDetector(
               onTap: () {
                 // 커뮤니티 작성글/댓글 버튼 클릭 시 동작 추가
+                context.go('/user/posts');
               },
               child: ListTile(
                 title: const Text('커뮤니티'),

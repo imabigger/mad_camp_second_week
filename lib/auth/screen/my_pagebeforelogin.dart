@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 
 class MyPageBeforeLogin extends StatelessWidget {
@@ -51,6 +52,7 @@ class MyPageBeforeLogin extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // 로그인 / 회원가입 버튼 클릭 시 동작 추가
+                context.go('/auth/login');
               },
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white, backgroundColor: Colors.green,

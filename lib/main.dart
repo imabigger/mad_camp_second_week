@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'route/go_route.dart';
 
@@ -17,10 +18,11 @@ void main() async {
   FlutterNaverLogin.initSdk(
       clientId: dotenv.env['naver_ClientID']!,
       clientName: dotenv.env['naver_ClientName']!,
-      clientSecret: dotenv.env['naver_ClientSecret']!
-  );
+      clientSecret: dotenv.env['naver_ClientSecret']!);
 
-  runApp(MyApp());
+  runApp(ProviderScope(
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {

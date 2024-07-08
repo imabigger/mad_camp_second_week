@@ -1,10 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:kaist_summer_camp_second_week/auth/auth.dart';
 
-class MyLoginPage extends StatelessWidget {
+import '../provider/auth_provider.dart';
+
+class MyLoginPage extends ConsumerStatefulWidget {
   const MyLoginPage({super.key});
 
   @override
+  ConsumerState<MyLoginPage> createState() => _MyLoginPageState();
+}
+
+class _MyLoginPageState extends ConsumerState<MyLoginPage> {
+
+  @override
   Widget build(BuildContext context) {
+    ref.listen<AuthState>(authProvider, (previous, next) {
+      if (next.isLoggedIn == true) {
+        context.go('/user');
+      }
+    });
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -24,7 +41,7 @@ class MyLoginPage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.close, color: Colors.black),
             onPressed: () {
-              Navigator.pop(context);
+              context.go('/');
             },
           ),
         ],
@@ -67,6 +84,10 @@ class MyLoginPage extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // 이메일 로그인 버튼 클릭 시 동작 추가
+                // test code
+
+                var isLoginSuccess = ref.read(authProvider.notifier).logInWithEmail(email: 'bigger@gmail.com', password: '1234');
+
               },
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white, backgroundColor: Colors.green,
@@ -110,6 +131,8 @@ class MyLoginPage extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: () {
                 // 카카오 로그인 버튼 클릭 시 동작 추가
+                var isLoginSuccess = ref.read(authProvider.notifier).logInWithKaKao();
+
               },
               icon: const Icon(Icons.chat_bubble, color: Colors.black),
               label: const Text('카카오로 시작'),
@@ -123,8 +146,9 @@ class MyLoginPage extends StatelessWidget {
             ),
             const SizedBox(height: 8.0),
             ElevatedButton.icon(
-              onPressed: () {
+              onPressed: () async {
                 // 네이버 로그인 버튼 클릭 시 동작 추가
+                var isLoginSuccess = await ref.read(authProvider.notifier).logInWithNaver();
               },
               icon: const Icon(Icons.chat_bubble, color: Colors.white),
               label: const Text('네이버로 시작'),

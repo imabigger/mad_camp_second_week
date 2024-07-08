@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kaist_summer_camp_second_week/auth/provider/auth_provider.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search_result.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('NongDam'),
@@ -19,9 +21,11 @@ class HomeScreen extends StatelessWidget {
               context.go('/user');
             },
           ),
+          if(!ref.read(authProvider).isLoggedIn)
           ElevatedButton(
             onPressed: () {
               // 가입 버튼 클릭 시 동작 추가
+              context.go('/auth/login');
             },
             child: const Text( '농담가입', style: TextStyle(fontSize: 13), ),
             style: ElevatedButton.styleFrom(
@@ -34,6 +38,7 @@ class HomeScreen extends StatelessWidget {
               minimumSize: Size(80, 20), // 버튼의 최소 크기 설정 (너비, 높이)
             ),
           ),
+
 
 
           const SizedBox(width: 8), // 오른쪽 여백 추가
