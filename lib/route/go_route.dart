@@ -4,6 +4,7 @@ import 'package:kaist_summer_camp_second_week/search/model/plant_model.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search_detail.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search_result.dart';
+import 'package:kaist_summer_camp_second_week/user/screen/my_pageafterlogin.dart';
 
 // GoRouter configuration
 final router = GoRouter(
@@ -12,6 +13,7 @@ final router = GoRouter(
       path: '/',
       builder: (context, state) => HomeScreen(),
       routes: [
+// home screen --> search page
         GoRoute(
           path: 'search',
           builder: (context, state) => SearchPage(),
@@ -46,6 +48,11 @@ final router = GoRouter(
             }),
           ]
         ),
+
+// home screen --> user my page
+        GoRoute(path: 'user', builder: (context, state) {
+          return MyPageAfterLogin();
+        }),
       ],
     ),
   ],

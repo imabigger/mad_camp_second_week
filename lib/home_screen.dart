@@ -16,6 +16,7 @@ class HomeScreen extends StatelessWidget {
             icon: Icon(Icons.person_outline),
             onPressed: () {
               // 프로필 버튼 클릭 시 동작 추가
+              context.go('/user');
             },
           ),
           ElevatedButton(
