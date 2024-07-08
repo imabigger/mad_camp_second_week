@@ -1,7 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:kaist_summer_camp_second_week/search/model/plant_model.dart';
+import 'package:kaist_summer_camp_second_week/search/screen/search_detail.dart';
 
-class SearchPage extends StatelessWidget {
+class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
+
+  @override
+  _SearchPageState createState() => _SearchPageState();
+}
+
+class _SearchPageState extends State<SearchPage> {
+  final TextEditingController _searchController = TextEditingController();
+  List<Plant> emptyPlants = [];
+  List<Plant> filteredPlants = [];
+  List<Plant> allPlants = plants.values.expand((innerMap) => innerMap.values).toList();
+
+  @override
+  void initState() {
+    super.initState();
+    filteredPlants = emptyPlants;
+    _searchController.addListener(_filterPlants);
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_filterPlants);
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _filterPlants() {
+    final query = _searchController.text.toLowerCase();
+    setState(() {
+      filteredPlants = allPlants.where((plant) {
+        return plant.name.toLowerCase().contains(query);
+      }).toList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +55,7 @@ class SearchPage extends StatelessWidget {
           title: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: TextField(
+              controller: _searchController,
               decoration: InputDecoration(
                 hintText: '어떤 작물을 심고 싶으세요?',
                 prefixIcon: const Icon(Icons.search, color: Colors.grey),
@@ -31,7 +67,6 @@ class SearchPage extends StatelessWidget {
                 fillColor: Colors.grey[200],
                 contentPadding: const EdgeInsets.symmetric(vertical: 10.0),
               ),
-              // onTap: () , -> 누르면 뭐지?
             ),
           ),
         ),
@@ -57,6 +92,30 @@ class SearchPage extends StatelessWidget {
                 _buildChip('아보카도'),
                 _buildChip('대파'),
               ],
+            ),
+            const SizedBox(height: 20),
+            Expanded(
+              child: ListView.builder(
+                itemCount: filteredPlants.length,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      ListTile(
+                        title: Text(filteredPlants[index].name),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SearchDetailPage(plant: filteredPlants[index]),
+                            ),
+                          );
+                        },
+                      ),
+                      if (index < filteredPlants.length - 1) const Divider(),
+                    ],
+                  );
+                },
+              ),
             ),
           ],
         ),
