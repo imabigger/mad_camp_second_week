@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search_result.dart';
 
@@ -54,9 +55,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => SearchPage()),
-                  );
+                  context.go('/search');
                 },
               ),
             ),
@@ -170,12 +169,7 @@ class CategoryIcon extends StatelessWidget {
 }
 
 void _navigateToSearchResult(BuildContext context, String label) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => SearchResultPage(label: label),
-    ),
-  );
+  context.go('/search/$label');
 }
 
 class SectionTitle extends StatelessWidget {

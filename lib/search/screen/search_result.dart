@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kaist_summer_camp_second_week/search/model/plant_model.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search_detail.dart';
@@ -56,8 +57,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> plantList = plants[currentLabel]?.keys.toList() ?? [];
-    List<Plant> objList = plants[currentLabel]?.values.toList() ?? [];
+    List<String> plantList = plants[currentLabel]!.keys.toList();
+    List<Plant> objList = plants[currentLabel]!.values.toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -78,10 +79,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
           IconButton(
             icon: const Icon(Icons.search, color: Colors.black),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SearchPage()),
-              ); // 검색 버튼 클릭 시 동작 추가
+              context.go('/search');
             },
           ),
         ],
@@ -115,10 +113,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                     ListTile(
                       title: Text(plantList[index]),
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => SearchDetailPage(plant: objList[index]))
-                        );
+                        context.go('/search/${currentLabel}/detail/${index}');
                       },
                     ),
                     if (index < plantList.length - 1) const Divider(),
