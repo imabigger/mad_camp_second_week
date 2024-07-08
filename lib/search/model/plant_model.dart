@@ -219,7 +219,7 @@ final potatoPlant = Plant(
 
 final sweetpotatoPlant = Plant(
   name: '고구마',
-  imageUrl: 'assets/images/sweet_potato.jpg',
+  imageUrl: 'assets/images/sweetpotato.jpg',
   description: [
     '• 온도: 21~26도의 따뜻한 기후\n• 강수량: 적당한 강수량(400~600mm)\n• 일조량: 매일 최소 6시간 이상의 일조',
     '• 토양 유형: 양질의 배수가 좋은 사질양토\n• pH 수준: 중성(pH 5.5~6.5)\n• 배수와 보수: 물 빠짐이 좋은 토양 필요',
@@ -318,7 +318,7 @@ final tomatoPlant = Plant(
 
 final greenplumPlant = Plant(
   name: '매실',
-  imageUrl: 'assets/images/plum.jpg',
+  imageUrl: 'assets/images/greenplum.jpg',
   description: [
     '• 온도: 12~15도의 온화한 기후\n• 강수량: 적당한 강수량(800~1200mm)\n• 일조량: 매일 최소 6시간 이상의 일조',
     '• 토양 유형: 양질의 배수가 좋은 점질양토\n• pH 수준: 약산성(pH 5.5~6.5)\n• 배수와 보수: 물 빠짐이 좋은 토양 필요',
@@ -438,7 +438,7 @@ final chrysanthemumPlant = Plant(
 
 final morninggloryPlant = Plant(
   name: '나팔꽃',
-  imageUrl: 'assets/images/morning_glory.jpg',
+  imageUrl: 'assets/images/morningglory.jpg',
   description: [
     '• 온도: 20~30도의 따뜻한 기후\n• 강수량: 적당한 강수량\n• 일조량: 매일 최소 6시간 이상의 일조',
     '• 토양 유형: 양질의 배수가 좋은 점질양토\n• pH 수준: 중성(pH 6.0~7.0)\n• 배수와 보수: 물 빠짐이 좋은 토양 필요',
@@ -530,7 +530,7 @@ final hyacinthPlant = Plant(
 );
 final crowndaisyPlant = Plant(
   name: '쑥갓',
-  imageUrl: 'assets/images/crown_daisy.jpg',
+  imageUrl: 'assets/images/crowndaisy.jpg',
   description: [
     '• 온도: 15~20도의 서늘한 기후\n• 강수량: 적당한 강수량\n• 일조량: 매일 최소 6시간 이상의 일조',
     '• 토양 유형: 양질의 배수가 좋은 사질양토\n• pH 수준: 약산성에서 중성(pH 5.5~6.5)\n• 배수와 보수: 물 빠짐이 좋은 토양 필요',

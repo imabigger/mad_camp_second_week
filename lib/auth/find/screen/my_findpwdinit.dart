@@ -4,9 +4,7 @@ class MyFindPwdInit extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(70.0), // AppBar 높이 조정
-        child: AppBar(
+      appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 1,
           leading: IconButton(
@@ -29,7 +27,6 @@ class MyFindPwdInit extends StatelessWidget {
             ),
           ],
         ),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

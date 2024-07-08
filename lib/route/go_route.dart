@@ -12,13 +12,14 @@ import 'package:kaist_summer_camp_second_week/user/screen/my_accountsetting.dart
 import 'package:kaist_summer_camp_second_week/user/screen/my_communityrecord.dart';
 import 'package:kaist_summer_camp_second_week/user/screen/my_pageafterlogin.dart';
 import 'package:kaist_summer_camp_second_week/user/screen/my_privateinfosetting.dart';
+import 'package:kaist_summer_camp_second_week/weather/screen/weather.dart';
 
 // GoRouter configuration
 final router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => HomeScreen(),
+      builder: (context, state) => WeatherPage(),
       routes: [
 // home screen --> search page
         GoRoute(
