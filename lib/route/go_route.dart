@@ -10,13 +10,14 @@ import 'package:kaist_summer_camp_second_week/search/screen/search.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search_detail.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search_result.dart';
 import 'package:kaist_summer_camp_second_week/user/screen/my_pageafterlogin.dart';
+import 'package:kaist_summer_camp_second_week/weather/screen/weather.dart';
 
 // GoRouter configuration
 final router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => CommunityWrittenPage(),
+      builder: (context, state) => WeatherPage(),
       routes: [
 // home screen --> search page
         GoRoute(
