@@ -112,6 +112,7 @@ class _SearchPageState extends State<SearchPage> {
                         },
                       ),
                       if (index < filteredPlants.length - 1) const Divider(),
+                      
                     ],
                   );
                 },

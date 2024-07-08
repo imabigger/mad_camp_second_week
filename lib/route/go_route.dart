@@ -1,4 +1,9 @@
 import 'package:go_router/go_router.dart';
+import 'package:kaist_summer_camp_second_week/community/screen/community_written.dart';
+import 'package:kaist_summer_camp_second_week/find/screen/my_findemailinit.dart';
+import 'package:kaist_summer_camp_second_week/find/screen/my_findemailnext.dart';
+import 'package:kaist_summer_camp_second_week/find/screen/my_findpwdinit.dart';
+import 'package:kaist_summer_camp_second_week/find/screen/my_findpwdnext.dart';
 import 'package:kaist_summer_camp_second_week/home_screen.dart';
 import 'package:kaist_summer_camp_second_week/search/model/plant_model.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search.dart';
@@ -11,7 +16,7 @@ final router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => HomeScreen(),
+      builder: (context, state) => CommunityWrittenPage(),
       routes: [
 // home screen --> search page
         GoRoute(
