@@ -1,8 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kaist_summer_camp_second_week/auth/find/screen/my_findemailinit.dart';
+import 'package:kaist_summer_camp_second_week/auth/find/screen/my_findemailnext.dart';
+import 'package:kaist_summer_camp_second_week/auth/find/screen/my_findpwdinit.dart';
+import 'package:kaist_summer_camp_second_week/auth/find/screen/my_findpwdnext.dart';
 import 'package:kaist_summer_camp_second_week/auth/provider/auth_provider.dart';
 import 'package:kaist_summer_camp_second_week/auth/screen/my_login.dart';
 import 'package:kaist_summer_camp_second_week/auth/screen/my_pagebeforelogin.dart';
+import 'package:kaist_summer_camp_second_week/auth/screen/my_signup.dart';
 import 'package:kaist_summer_camp_second_week/home_screen.dart';
 import 'package:kaist_summer_camp_second_week/search/model/plant_model.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search.dart';
@@ -80,15 +85,14 @@ final router = GoRouter(
                   builder: (context, state) {
                     return MyAccountSettingPage();
                   },
-                routes: [
-                  GoRoute(
-                    path: 'private',
-                    builder: (context, state) {
-                      return MyPrivateInfoSettingPage();
-                    },
-                  ),
-                ]
-              ),
+                  routes: [
+                    GoRoute(
+                      path: 'private',
+                      builder: (context, state) {
+                        return MyPrivateInfoSettingPage();
+                      },
+                    ),
+                  ]),
               GoRoute(
                 path: 'posts',
                 builder: (context, state) {
@@ -105,22 +109,53 @@ final router = GoRouter(
           },
           routes: [
             GoRoute(
-                path: 'login',
-                builder: (context, state) {
-                  return MyLoginPage();
-                },
-                redirect: (context, GoRouterState state) {
-                  final authState =
-                      ProviderScope.containerOf(context).read(authProvider);
-                  if (authState.isLoggedIn == true) {
-                    return '/user';
-                  }
-                  return null;
-                }),
+              path: 'login',
+              builder: (context, state) {
+                return MyLoginPage();
+              },
+              redirect: (context, GoRouterState state) {
+                final authState =
+                    ProviderScope.containerOf(context).read(authProvider);
+                if (authState.isLoggedIn == true) {
+                  return '/user';
+                }
+                return null;
+              },
+              routes: [
+                GoRoute(
+                  path: 'find/email',
+                  builder: (context, state) {
+                    return MyFindEmailInit();
+                  },
+                  routes: [
+                    GoRoute(
+                      path: 'next',
+                      builder: (context, state) {
+                        return MyFindEmailNext();
+                      },
+                    ),
+                  ],
+                ),
+                GoRoute(
+                  path: 'find/password',
+                  builder: (context, state) {
+                    return MyFindPwdInit();
+                  },
+                    routes: [
+                      GoRoute(
+                        path: 'next',
+                        builder: (context, state) {
+                          return MyFindPwdNext();
+                        },
+                      ),
+                    ],
+                ),
+              ],
+            ),
             GoRoute(
                 path: 'signup',
                 builder: (context, state) {
-                  return MyLoginPage();
+                  return MySignUpPage();
                 }),
           ],
         ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kaist_summer_camp_second_week/auth/auth.dart';
+import 'package:kaist_summer_camp_second_week/auth/model/auth.dart';
 
 import '../provider/auth_provider.dart';
 
@@ -108,6 +108,7 @@ class _MyLoginPageState extends ConsumerState<MyLoginPage> {
                 TextButton(
                   onPressed: () {
                     // 이메일 찾기 버튼 클릭 시 동작 추가
+                    context.go('/auth/login/find/email');
                   },
                   child: const Text('이메일 찾기'),
                 ),
@@ -115,6 +116,7 @@ class _MyLoginPageState extends ConsumerState<MyLoginPage> {
                 TextButton(
                   onPressed: () {
                     // 비밀번호 찾기 버튼 클릭 시 동작 추가
+                    context.go('/auth/login/find/password');
                   },
                   child: const Text('비밀번호 찾기'),
                 ),
@@ -122,6 +124,7 @@ class _MyLoginPageState extends ConsumerState<MyLoginPage> {
                 TextButton(
                   onPressed: () {
                     // 회원가입 버튼 클릭 시 동작 추가
+                    context.go('/auth/signup');
                   },
                   child: const Text('회원가입'),
                 ),

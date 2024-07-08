@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class MyFindEmailInit extends StatelessWidget {
   @override
@@ -53,7 +54,10 @@ class MyFindEmailInit extends StatelessWidget {
                 ),
                 const SizedBox(width: 10),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    // test
+                    context.go('/auth/login/find/email/next');
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFB4CF50), // 전송 버튼 배경색
                     shape: RoundedRectangleBorder(

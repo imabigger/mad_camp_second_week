@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kaist_summer_camp_second_week/auth/auth.dart';
+import 'package:kaist_summer_camp_second_week/auth/model/auth.dart';
 import 'package:kaist_summer_camp_second_week/component/dio/provider/dio_provider.dart';
 import 'package:kaist_summer_camp_second_week/user/model/user_model.dart' as user_model;
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
@@ -15,6 +15,29 @@ class AuthNotifier extends StateNotifier<AuthState> {
   AuthNotifier(this._ref) : super(AuthState(isLoggedIn: false, user: null, accessToken: null, refreshToken: null));
 
   final Ref _ref;
+
+  Future<bool> register({required String email, required String username,required String password}) async {
+    try{
+      final dio = _ref.read(dioProvider);
+      final response = await dio.post('/register', data: {
+        'email': email,
+        'username': username,
+        'password': password,
+      });
+
+      final responseJson = response.data['user'];
+      final accessToken = response.data['accessToken'];
+      final refreshToken = response.data['refreshToken'];
+
+      final user = user_model.User.fromJson(responseJson);
+
+      state = state.copyWith(isLoggedIn: true, user: user, accessToken: accessToken, refreshToken: refreshToken);
+      return true;
+      } catch (e) {
+        print('Register failed: $e');
+        throw Exception();
+      }
+    }
 
   Future<bool> logInWithEmail({required String email,required String password}) async {
     try {
@@ -66,7 +89,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
       final user = user_model.User.fromJson(responseJson);
 
-      state = state.copyWith(isLoggedIn: true, user: user, accessToken: accessToken, refreshToken: refreshToken);
+      state = state.copyWith(isLoggedIn: true, user: user, accessToken: accessToken, refreshToken: refreshToken, isKakaoTalkLogin: true);
       return true;
     } catch (e) {
       print('Login failed: $e');
@@ -95,7 +118,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
       final user = user_model.User.fromJson(responseJson);
 
-      state = state.copyWith(isLoggedIn: true, user: user, accessToken: accessToken, refreshToken: refreshToken);
+      state = state.copyWith(isLoggedIn: true, user: user, accessToken: accessToken, refreshToken: refreshToken, isNaverLogin: true);
       return true;
     } catch (e) {
       print('Login failed: $e');
