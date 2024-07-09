@@ -205,5 +205,4 @@ class _CommunitySearchPageState extends ConsumerState<CommunitySearchPage> {
       ),
     );
   }
-
 }
