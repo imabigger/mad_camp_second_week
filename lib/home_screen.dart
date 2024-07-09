@@ -293,8 +293,8 @@ class CategoryIcon extends StatelessWidget {
               child: Image.asset(imagePath), // 이미지를 표시
             ),
           ),
-          const SizedBox(height: 5),
-          Text(label, style: const TextStyle(fontSize: 12)),
+          const SizedBox(height: 3),
+          Text(label, style: const TextStyle(fontSize: 11)),
         ],
       ),
     );

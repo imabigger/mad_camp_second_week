@@ -21,7 +21,6 @@ import 'package:kaist_summer_camp_second_week/user/screen/my_communityrecord.dar
 import 'package:kaist_summer_camp_second_week/user/screen/my_pageafterlogin.dart';
 import 'package:kaist_summer_camp_second_week/user/screen/my_privateinfosetting.dart';
 import 'package:kaist_summer_camp_second_week/weather/screen/weather_main.dart';
-// import 'package:kaist_summer_camp_second_week/weather/screen/weather.dart';
 
 // GoRouter configuration
 final router = GoRouter(

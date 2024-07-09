@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -18,6 +20,7 @@ class _WeatherPageState extends State<WeatherMain> {
   Weather? _weather;
   Map<String, List<Weather>>? _groupedDailyWeather;
   String? _selectedDay;
+  String? radarUrl;
 
   @override
   void initState() {
@@ -25,17 +28,6 @@ class _WeatherPageState extends State<WeatherMain> {
     //여기에 위치 받아서 city를 업데이트 할 수 있도록 해야.
     getCurrentLocationAndFetchWeather();
   }
-
-  // Future<void> getCurrentLocationAndFetchWeather() async {
-  //   try {
-  //     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.low);
-  //     double late = position.latitude;
-  //     double long = position.longitude;
-  //     fetchWeather(late, long);
-  //   } catch (e) {
-  //     print("Error getting location: $e");
-  //   }
-  // }
 
   Future<void> getCurrentLocationAndFetchWeather() async {
     bool serviceEnabled;
@@ -76,6 +68,23 @@ class _WeatherPageState extends State<WeatherMain> {
     double longitude = position.longitude;
 
     fetchWeather(latitude, longitude);
+    _fetchRadarImage(position.latitude, position.longitude);
+  }
+
+  TileCoordinates latLonToTile(double lat, double lon, int zoom) {
+    int x = ((lon + 180) / 360 * pow(2, zoom)).floor();
+    int y = ((1 - log(tan(lat * pi / 180) + 1 / cos(lat * pi / 180)) / pi) / 2 * pow(2, zoom)).floor();
+    return TileCoordinates(x, y);
+  }
+
+  Future<void> _fetchRadarImage(double lat, double lon) async {
+    String apiKey = OPENWEATHER_API_KEY;
+    int zoom = 5; // 원하는 줌 레벨 설정
+    TileCoordinates tile = latLonToTile(lat, lon, zoom);
+    String url = 'https://tile.openweathermap.org/map/precipitation_new/$zoom/${tile.x}/${tile.y}.png?appid=$apiKey';
+    setState(() {
+      radarUrl = url;
+    });
   }
 
   Future<void> fetchWeather(double latitude, double longitude) async {
@@ -339,17 +348,25 @@ class _WeatherPageState extends State<WeatherMain> {
 
             //레이더 지도
             Container(
+              width: double.infinity,
               padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.green[100],
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Center(
-                child: Text(
-                    '레이더 및 지도\n이곳은 그냥 플레이스홀더',
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    '기상 레이더',
                     style: TextStyle(
                       fontSize: 16, fontWeight: FontWeight.bold,),
                     textAlign: TextAlign.center),
+                  SizedBox(height: 8),
+                  radarUrl == null
+                      ? CircularProgressIndicator()
+                      : Image.network(radarUrl!),
+                ],
               ),
             ),
           ],
@@ -518,4 +535,10 @@ class _WeatherPageState extends State<WeatherMain> {
       ],
     );
   }
+}
+
+class TileCoordinates {
+  final int x;
+  final int y;
+  TileCoordinates(this.x, this.y);
 }

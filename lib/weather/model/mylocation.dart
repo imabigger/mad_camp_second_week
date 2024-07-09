@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -12,6 +13,7 @@ class MyLocation extends StatefulWidget {
 class _MyLocationState extends State<MyLocation> {
   double? latitude;
   double? longitude;
+  String? radarUrl;
 
   @override
   void initState() {
@@ -48,14 +50,31 @@ class _MyLocationState extends State<MyLocation> {
     }
 
     try {
-      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.low);
+      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
       setState(() {
         latitude = position.latitude;
         longitude = position.longitude;
       });
+      _fetchRadarImage(position.latitude, position.longitude);
     } catch (e) {
       print("Error getting location: $e");
     }
+  }
+
+  TileCoordinates latLonToTile(double lat, double lon, int zoom) {
+    int x = ((lon + 180) / 360 * pow(2, zoom)).floor();
+    int y = ((1 - log(tan(lat * pi / 180) + 1 / cos(lat * pi / 180)) / pi) / 2 * pow(2, zoom)).floor();
+    return TileCoordinates(x, y);
+  }
+
+  Future<void> _fetchRadarImage(double lat, double lon) async {
+    String apiKey = OPENWEATHER_API_KEY;
+    int zoom = 1; // 원하는 줌 레벨 설정
+    TileCoordinates tile = latLonToTile(lat, lon, zoom);
+    String url = 'https://tile.openweathermap.org/map/precipitation_new/$zoom/${tile.x}/${tile.y}.png?appid=$apiKey';
+    setState(() {
+      radarUrl = url;
+    });
   }
 
   @override
@@ -69,4 +88,10 @@ class _MyLocationState extends State<MyLocation> {
       ),
     );
   }
+}
+
+class TileCoordinates {
+  final int x;
+  final int y;
+  TileCoordinates(this.x, this.y);
 }
