@@ -5,7 +5,7 @@ import 'package:kaist_summer_camp_second_week/auth/provider/auth_provider.dart';
 import 'package:kaist_summer_camp_second_week/community/screen/community.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search_result.dart';
-import 'package:kaist_summer_camp_second_week/weather/screen/weather.dart';
+import 'package:kaist_summer_camp_second_week/weather/screen/weather_main.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   final int? firstScreenIndex;
@@ -65,7 +65,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         children: [
           HomeView(onCommunityClick: onCommunityClick,),
           CommunityPage(boardId: currentBoardIndex,),
-          WeatherPage(),
+          WeatherMain(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
