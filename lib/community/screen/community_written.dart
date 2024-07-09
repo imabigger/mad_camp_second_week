@@ -66,7 +66,7 @@ class _CommunityWrittenPageState extends ConsumerState<CommunityWrittenPage> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        '서비스 / 지역',
+                        '${post.topic} / ${post.region}',
                         style: TextStyle(color: Colors.grey),
                       ),
                       const SizedBox(height: 16),
