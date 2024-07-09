@@ -1,8 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kaist_summer_camp_second_week/community/model/post_model.dart';
+import 'package:kaist_summer_camp_second_week/community/provider/post_provider.dart';
 
-class CommunityWrittenPage extends StatelessWidget {
+class CommunityWrittenPage extends ConsumerStatefulWidget {
+  final String postId;
+
+  const CommunityWrittenPage({Key? key, required this.postId}) : super(key: key);
+
+  @override
+  ConsumerState<CommunityWrittenPage> createState() => _CommunityWrittenPageState();
+}
+
+class _CommunityWrittenPageState extends ConsumerState<CommunityWrittenPage> {
+
   @override
   Widget build(BuildContext context) {
+    final post = ref.watch(postProvider).firstWhere((post) => post.id == widget.postId);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -14,7 +29,7 @@ class CommunityWrittenPage extends StatelessWidget {
           },
         ),
         title: Text(
-          '물고 답해요',
+          ,
           style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,

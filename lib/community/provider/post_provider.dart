@@ -17,6 +17,7 @@ class PostNotifier extends StateNotifier<List<PostModel>>{
   PostNotifier({required this.ref}) : super([]);
 
   Future<void> getPosts({bool isRefresh = false}) async {
+
     if (isRefresh) {
       _currentPage = 0;
       _hasMore = true;
