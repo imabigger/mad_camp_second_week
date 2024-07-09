@@ -8,6 +8,7 @@ import 'package:kaist_summer_camp_second_week/auth/provider/auth_provider.dart';
 import 'package:kaist_summer_camp_second_week/auth/screen/my_login.dart';
 import 'package:kaist_summer_camp_second_week/auth/screen/my_pagebeforelogin.dart';
 import 'package:kaist_summer_camp_second_week/auth/screen/my_signup.dart';
+import 'package:kaist_summer_camp_second_week/community/screen/community.dart';
 import 'package:kaist_summer_camp_second_week/home_screen.dart';
 import 'package:kaist_summer_camp_second_week/search/model/plant_model.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search.dart';
@@ -24,7 +25,21 @@ final router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => WeatherPage(),
+      builder: (context, state)  {
+        final queryParams = state.uri.queryParameters;
+        final screenIndexS = queryParams['screenIndex'];
+        final boardIndexS = queryParams['boardIndex'];
+
+        if(screenIndexS == null || boardIndexS == null){
+          return HomeScreen();
+        }
+
+        final int screenIndex = int.parse(screenIndexS);
+        final int boardIndex = int.parse(boardIndexS);
+
+        return HomeScreen(firstScreenIndex: screenIndex, firstBoardIndex : boardIndex);
+
+      },
       routes: [
 // home screen --> search page
         GoRoute(

@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class CommunityPage extends StatefulWidget {
-  const CommunityPage({super.key});
+  final int boardId; // 0이 보드를 선택하지 않음을 의미함.1,2,3,4 까지 존재.
+
+  const CommunityPage({this.boardId = 0,super.key});
 
   @override
   _CommunityPageState createState() => _CommunityPageState();
 }
 
-class _CommunityPageState extends State<CommunityPage> {
-  int _selectedIndex = 1; // 기본적으로 커뮤니티 페이지를 선택
+class _CommunityPageState extends State<CommunityPage> with SingleTickerProviderStateMixin {
+  late int selectedIndex = widget.boardId; // 기본적으로 커뮤니티 페이지를 선택
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text('Home Page'),
-    Text('Community Page'),
-    Text('Weather Page'),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  @override
+  void didUpdateWidget(covariant CommunityPage oldWidget) {  // 상위 위젯의 상태가 변경 될때, 하위 위젯에도 알리는 함수임!! 이걸 써서 homescreen 이 변경될때 여기서도 변경되게함.
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
+    if(oldWidget.boardId != widget.boardId){
+      selectedIndex = widget.boardId;
+    }
   }
 
   @override
@@ -44,6 +44,7 @@ class _CommunityPageState extends State<CommunityPage> {
             icon: const Icon(Icons.person, color: Colors.black),
             onPressed: () {
               // 프로필 아이콘 클릭 시 동작 추가
+              context.go('/user');
             },
           ),
         ],
@@ -55,14 +56,14 @@ class _CommunityPageState extends State<CommunityPage> {
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                children: const [
-                  Chip(label: Text('묻고 답해요')),
+                children: [
+                  _buildChip(1, '묻고 답해요'),
                   SizedBox(width: 8),
-                  Chip(label: Text('함께해요')),
+                  _buildChip(2, '함께해요'),
                   SizedBox(width: 8),
-                  Chip(label: Text('판매해요')),
+                  _buildChip(3, '판매해요'),
                   SizedBox(width: 8),
-                  Chip(label: Text('농담 이야기')),
+                  _buildChip(4, '농담 이야기'),
                 ],
               ),
             ),
@@ -145,26 +146,23 @@ class _CommunityPageState extends State<CommunityPage> {
           borderRadius: BorderRadius.circular(50),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            label: 'Community',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.cloud),
-            label: 'Weather',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.green,
-        unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped,
+    );
+  }
+
+
+  Widget _buildChip(int index, String label) {
+    return GestureDetector(
+      onTap: () => _onChipTap(index),
+      child: Chip(
+        label: Text(label),
+        backgroundColor: selectedIndex == index ? Colors.lightGreen : null,
       ),
     );
+  }
+
+  void _onChipTap(int index) {
+    setState(() {
+      selectedIndex = index;
+    });
   }
 }
