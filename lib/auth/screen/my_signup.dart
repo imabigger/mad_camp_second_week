@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kaist_summer_camp_second_week/auth/model/auth.dart';
+import 'package:kaist_summer_camp_second_week/auth/provider/auth_provider.dart';
 
-class MySignUpPage extends StatefulWidget{
+class MySignUpPage extends ConsumerStatefulWidget {
   @override
-  State<MySignUpPage> createState() => _MySignUpPageState();
+  ConsumerState<MySignUpPage> createState() => _MySignUpPageState();
 }
 
-class _MySignUpPageState extends State<MySignUpPage> {
+class _MySignUpPageState extends ConsumerState<MySignUpPage> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -24,8 +27,14 @@ class _MySignUpPageState extends State<MySignUpPage> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<AuthState>(authProvider, (previous, next) {
+      if (next.isLoggedIn == true) {
+        context.go('/user');
+      }
+    });
+
     return GestureDetector(
-      onPanDown: (_){
+      onPanDown: (_) {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
@@ -57,14 +66,16 @@ class _MySignUpPageState extends State<MySignUpPage> {
                     children: [
                       Align(
                         alignment: Alignment.center,
-                        child: Icon(Icons.person, size: 50, color: Colors.white),
+                        child:
+                            Icon(Icons.person, size: 50, color: Colors.white),
                       ),
                       Align(
                         alignment: Alignment.bottomRight,
                         child: CircleAvatar(
                           backgroundColor: Colors.white,
                           radius: 15,
-                          child: Icon(Icons.camera_alt, size: 15, color: Colors.black),
+                          child: Icon(Icons.camera_alt,
+                              size: 15, color: Colors.black),
                         ),
                       ),
                     ],
@@ -128,13 +139,49 @@ class _MySignUpPageState extends State<MySignUpPage> {
                 ),
                 const SizedBox(height: 32.0),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     // 회원가입 완료 버튼 클릭 시 동작 추가
+                    String email, username, password, passwordCheck;
+                    email = emailController.text;
+                    username = nameController.text;
+                    password = passwordController.text;
+                    passwordCheck = passwordCheckController.text;
 
+                    if (email.isEmpty || username.isEmpty || password.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('모든 항목을 입력해주세요.'),
+                        ),
+                      );
+                      return;
+                    } else if(password != passwordCheck){
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('비밀번호가 일치하지 않습니다.'),
+                        ),
+                      );
+                      return;
+                    }
+
+                    bool isRegisterSuccess = await ref
+                        .read(authProvider.notifier)
+                        .register(
+                            email: email,
+                            username: username,
+                            password: password);
+                    if (!isRegisterSuccess) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('회원가입에 실패했습니다. 다시 시도해주세요.'),
+                        ),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white, backgroundColor: Colors.green,
-                    padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 16),
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.green,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 100, vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),

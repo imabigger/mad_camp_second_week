@@ -2,11 +2,110 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kaist_summer_camp_second_week/auth/provider/auth_provider.dart';
+import 'package:kaist_summer_camp_second_week/community/screen/community.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search_result.dart';
+import 'package:kaist_summer_camp_second_week/weather/screen/weather.dart';
 
-class HomeScreen extends ConsumerWidget {
-  const HomeScreen({super.key});
+class HomeScreen extends ConsumerStatefulWidget {
+  final int? firstScreenIndex;
+  final int? firstBoardIndex;
+  const HomeScreen({this.firstScreenIndex, this.firstBoardIndex,super.key});
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen>
+    with SingleTickerProviderStateMixin {
+  int currentScreenIndex = 0;
+  int currentBoardIndex = 0;
+
+  late TabController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.firstScreenIndex != null) {
+      currentScreenIndex = widget.firstScreenIndex!;
+    }
+    if(widget.firstBoardIndex != null){
+      currentBoardIndex = widget.firstBoardIndex!;
+    }
+    _controller = TabController(length: 3, vsync: this);
+    _controller.index = currentScreenIndex;
+    _controller.animation!.addListener(_handleTabAnimation);
+  }
+
+  void _handleTabAnimation() {
+    // Check if the transition between tabs is completed
+
+    final newIndex = _controller.animation!.value.round();
+
+    if (newIndex != currentScreenIndex) {
+      setState(() {
+        currentScreenIndex = newIndex;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _controller.animation!.removeListener(_handleTabAnimation);
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: TabBarView(
+        controller: _controller,
+        children: [
+          HomeView(onCommunityClick: onCommunityClick,),
+          CommunityPage(boardId: currentBoardIndex,),
+          WeatherPage(),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: currentScreenIndex,
+        onTap: (index) {
+          setState(() {
+            currentScreenIndex = index;
+            _controller.index = index;
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: '홈',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.people),
+            label: '커뮤니티',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.sunny),
+            label: '날씨',
+          ),
+        ],
+      ),
+    );
+  }
+
+  void onCommunityClick(int boardIndex){
+    currentBoardIndex = boardIndex;
+
+    setState(() {
+      _controller.index = 1;
+    });
+  }
+}
+
+class HomeView extends ConsumerWidget {
+  final void Function(int) onCommunityClick;
+  const HomeView({required this.onCommunityClick,super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -21,25 +120,27 @@ class HomeScreen extends ConsumerWidget {
               context.go('/user');
             },
           ),
-          if(!ref.read(authProvider).isLoggedIn)
-          ElevatedButton(
-            onPressed: () {
-              // 가입 버튼 클릭 시 동작 추가
-              context.go('/auth/login');
-            },
-            child: const Text( '농담가입', style: TextStyle(fontSize: 13), ),
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.white,
-              backgroundColor: Color(0xFF7C9A36),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+          if (!ref.read(authProvider).isLoggedIn)
+            ElevatedButton(
+              onPressed: () {
+                // 가입 버튼 클릭 시 동작 추가
+                context.go('/auth/login');
+              },
+              child: const Text(
+                '농담가입',
+                style: TextStyle(fontSize: 13),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              minimumSize: Size(80, 20), // 버튼의 최소 크기 설정 (너비, 높이)
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Color(0xFF7C9A36),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                minimumSize: Size(80, 20), // 버튼의 최소 크기 설정 (너비, 높이)
+              ),
             ),
-          ),
-
-
 
           const SizedBox(width: 8), // 오른쪽 여백 추가
         ],
@@ -74,14 +175,46 @@ class HomeScreen extends ConsumerWidget {
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 children: [
-                  CategoryIcon(label: '전체 보기', imagePath: 'assets/i_gridview.png', onTap: () => _navigateToSearchResult(context, '전체 보기'),),
-                  CategoryIcon(label: '곡물', imagePath: 'assets/i_crop.png', onTap: () => _navigateToSearchResult(context, '곡물'),),
-                  CategoryIcon(label: '채소', imagePath: 'assets/i_vege.png', onTap: () => _navigateToSearchResult(context, '채소'),),
-                  CategoryIcon(label: '과일', imagePath: 'assets/i_fruit.png', onTap: () => _navigateToSearchResult(context, '과일'),),
-                  CategoryIcon(label: '꽃', imagePath: 'assets/i_flower.png', onTap: () => _navigateToSearchResult(context, '꽃'),),
-                  CategoryIcon(label: '허브', imagePath:  'assets/i_herb.png', onTap: () => _navigateToSearchResult(context, '허브'),),
-                  CategoryIcon(label: '견과류', imagePath: 'assets/i_nuts.png', onTap: () => _navigateToSearchResult(context, '견과류'),),
-                  CategoryIcon(label: '다육식물', imagePath: 'assets/i_cactus.png', onTap: () => _navigateToSearchResult(context, '다육식물'),),
+                  CategoryIcon(
+                    label: '전체 보기',
+                    imagePath: 'assets/i_gridview.png',
+                    onTap: () => _navigateToSearchResult(context, '전체 보기'),
+                  ),
+                  CategoryIcon(
+                    label: '곡물',
+                    imagePath: 'assets/i_crop.png',
+                    onTap: () => _navigateToSearchResult(context, '곡물'),
+                  ),
+                  CategoryIcon(
+                    label: '채소',
+                    imagePath: 'assets/i_vege.png',
+                    onTap: () => _navigateToSearchResult(context, '채소'),
+                  ),
+                  CategoryIcon(
+                    label: '과일',
+                    imagePath: 'assets/i_fruit.png',
+                    onTap: () => _navigateToSearchResult(context, '과일'),
+                  ),
+                  CategoryIcon(
+                    label: '꽃',
+                    imagePath: 'assets/i_flower.png',
+                    onTap: () => _navigateToSearchResult(context, '꽃'),
+                  ),
+                  CategoryIcon(
+                    label: '허브',
+                    imagePath: 'assets/i_herb.png',
+                    onTap: () => _navigateToSearchResult(context, '허브'),
+                  ),
+                  CategoryIcon(
+                    label: '견과류',
+                    imagePath: 'assets/i_nuts.png',
+                    onTap: () => _navigateToSearchResult(context, '견과류'),
+                  ),
+                  CategoryIcon(
+                    label: '다육식물',
+                    imagePath: 'assets/i_cactus.png',
+                    onTap: () => _navigateToSearchResult(context, '다육식물'),
+                  ),
                 ],
               ),
             ),
@@ -93,25 +226,25 @@ class HomeScreen extends ConsumerWidget {
               child: PlantList(),
             ),
             // 커뮤니티 섹션
-            SectionTitle(title: '농담 커뮤니티에 물어보세요', showMore: true),
+            SectionTitle(title: '농담 커뮤니티에 물어보세요', showMore: true, onAllShowClicked: onCommunityClick, boardIndex: 1,),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: PlantList(),
             ),
             // 함께해요 섹션
-            SectionTitle(title: '함께해요', showMore: true),
+            SectionTitle(title: '함께해요', showMore: true, onAllShowClicked: onCommunityClick, boardIndex: 2,),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: PlantList(),
             ),
             // 판매해요 섹션
-            SectionTitle(title: '판매해요', showMore: true),
+            SectionTitle(title: '판매해요', showMore: true, onAllShowClicked: onCommunityClick, boardIndex: 3,),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: PlantList(),
             ),
             // 이야기 섹션
-            SectionTitle(title: '농담 이야기', showMore: true),
+            SectionTitle(title: '농담 이야기', showMore: true, onAllShowClicked: onCommunityClick, boardIndex: 4,),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: PlantList(),
@@ -119,24 +252,10 @@ class HomeScreen extends ConsumerWidget {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: '홈',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            label: '커뮤니티',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.sunny),
-            label: '날씨',
-          ),
-        ],
-      ),
     );
   }
+
+
 }
 
 class CategoryIcon extends StatelessWidget {
@@ -144,7 +263,12 @@ class CategoryIcon extends StatelessWidget {
   final String imagePath;
   final VoidCallback onTap;
 
-  const CategoryIcon({Key? key, required this.label, required this.imagePath, required this.onTap}) : super(key: key);
+  const CategoryIcon(
+      {Key? key,
+      required this.label,
+      required this.imagePath,
+      required this.onTap})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -181,8 +305,10 @@ void _navigateToSearchResult(BuildContext context, String label) {
 class SectionTitle extends StatelessWidget {
   final String title;
   final bool showMore;
+  final void Function(int)? onAllShowClicked;
+  final int? boardIndex;
 
-  const SectionTitle({required this.title, this.showMore = false});
+  const SectionTitle({required this.title, this.showMore = false, this.onAllShowClicked, this.boardIndex});
 
   @override
   Widget build(BuildContext context) {
@@ -191,10 +317,14 @@ class SectionTitle extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          Text(title,
+              style:
+                  const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           if (showMore)
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                onAllShowClicked!(boardIndex!);
+              },
               child: const Text('전체보기', style: TextStyle(color: Colors.green)),
             ),
         ],
@@ -242,8 +372,10 @@ class PlantCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 5),
-          const Text('상추', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-          const Text('240,840명 검색', style: TextStyle(fontSize: 12, color: Colors.grey)),
+          const Text('상추',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+          const Text('240,840명 검색',
+              style: TextStyle(fontSize: 12, color: Colors.grey)),
         ],
       ),
     );
