@@ -118,103 +118,108 @@ class _CommunityPageState extends ConsumerState<CommunityPage>
                     itemBuilder: (context, index) {
                       final post = posts[index];
 
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(Board.values[post.boardId].name,
-                                style: TextStyle(color: Colors.grey)),
-                            const SizedBox(height: 8.0),
-                            Text(
-                              post.title,
-                              maxLines: 1,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                overflow: TextOverflow.ellipsis,
+                      return InkWell(
+                        onTap: () {
+                          context.go('/postDetail/${post.id}');
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(Board.values[post.boardId].name,
+                                  style: TextStyle(color: Colors.grey)),
+                              const SizedBox(height: 8.0),
+                              Text(
+                                post.title,
+                                maxLines: 1,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 8.0),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        post.title,
-                                        maxLines: 3,
-                                        style: const TextStyle(
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(width: 8.0),
-                                Container(
-                                  width: 50,
-                                  height: 50,
-                                  color: Colors.grey.shade300,
-                                  child: const Icon(Icons.image,  ///  이미지를 넣어야함.
-                                      color: Colors.grey),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8.0),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 0.0),
-                              child: Row(
+                              const SizedBox(height: 8.0),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  IconButton(
-                                    icon: post.likesUid.contains(user?.id) ? Icon(Icons.favorite,
-                                        color: Colors.red) : Icon(Icons.favorite_border,
-                                        color: Colors.red),
-                                    onPressed: () async {
-                                      // 좋아요 버튼 클릭 시 동작 추가
-                                      if(user == null) {
-                                        context.go('/auth');
-
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(
-                                            content: Text('로그인이 필요한 서비스입니다.'),
-                                            duration: const Duration(seconds: 1),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          post.title,
+                                          maxLines: 3,
+                                          style: const TextStyle(
+                                            overflow: TextOverflow.ellipsis,
                                           ),
-                                        );
-                                        return;
-                                      }
-
-                                      if(post.likesUid.contains(user.id)) {
-                                        await ref.read(postProvider.notifier).unlikePost(postId: post.id, uid: user.id);
-                                      } else {
-                                        await ref.read(postProvider.notifier)
-                                            .likePost(
-                                            postId: post.id, uid: user.id);
-                                      }
-                                      setState(() {
-
-                                      });
-                                    },
+                                        ),
+                                      ],
+                                    ),
                                   ),
-
-                                  Text(post.likesUid.length.toString()),
-                                  const SizedBox(width: 16),
-                                  IconButton(
-                                    icon: const Icon(Icons.comment_outlined,
-                                        color: Colors.black),
-                                    onPressed: () {
-                                      // 댓글 버튼 클릭 시 동작 추가
-                                    },
+                                  const SizedBox(width: 8.0),
+                                  Container(
+                                    width: 50,
+                                    height: 50,
+                                    color: Colors.grey.shade300,
+                                    child: const Icon(Icons.image,  ///  이미지를 넣어야함.
+                                        color: Colors.grey),
                                   ),
-                                  Text(post.comments.length.toString()),
                                 ],
                               ),
-                            ),
-                            const Divider(),
-                          ],
+                              const SizedBox(height: 8.0),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 0.0),
+                                child: Row(
+                                  children: [
+                                    IconButton(
+                                      icon: post.likesUid.contains(user?.id) ? Icon(Icons.favorite,
+                                          color: Colors.red) : Icon(Icons.favorite_border,
+                                          color: Colors.red),
+                                      onPressed: () async {
+                                        // 좋아요 버튼 클릭 시 동작 추가
+                                        if(user == null) {
+                                          context.go('/auth');
+
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Text('로그인이 필요한 서비스입니다.'),
+                                              duration: const Duration(seconds: 1),
+                                            ),
+                                          );
+                                          return;
+                                        }
+
+                                        if(post.likesUid.contains(user.id)) {
+                                          await ref.read(postProvider.notifier).unlikePost(postId: post.id, uid: user.id);
+                                        } else {
+                                          await ref.read(postProvider.notifier)
+                                              .likePost(
+                                              postId: post.id, uid: user.id);
+                                        }
+                                        setState(() {
+
+                                        });
+                                      },
+                                    ),
+
+                                    Text(post.likesUid.length.toString()),
+                                    const SizedBox(width: 16),
+                                    IconButton(
+                                      icon: const Icon(Icons.comment_outlined,
+                                          color: Colors.black),
+                                      onPressed: () {
+                                        // 댓글 버튼 클릭 시 동작 추가
+                                      },
+                                    ),
+                                    Text(post.comments.length.toString()),
+                                  ],
+                                ),
+                              ),
+                              const Divider(),
+                            ],
+                          ),
                         ),
                       );
                     },

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kaist_summer_camp_second_week/auth/provider/auth_provider.dart';
 import 'package:kaist_summer_camp_second_week/community/screen/community.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search.dart';
+import 'package:kaist_summer_camp_second_week/weather/screen/weather_main.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search_result.dart';
 import 'package:kaist_summer_camp_second_week/weather/screen/weather_main.dart';
 
@@ -154,6 +155,8 @@ class HomeView extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: TextField(
+                focusNode: FocusNode(canRequestFocus: false),
+                readOnly: true,
                 decoration: InputDecoration(
                   hintText: '어떤 작물을 심고 싶으세요?',
                   prefixIcon: Icon(Icons.search),
