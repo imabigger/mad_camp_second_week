@@ -1,4 +1,6 @@
 
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kaist_summer_camp_second_week/community/model/post_model.dart';
 import 'package:kaist_summer_camp_second_week/component/dio/provider/dio_provider.dart';
@@ -78,6 +80,42 @@ class PostNotifier extends StateNotifier<List<PostModel>>{
       state[postIndex] = post.copyWith(likesUid: post.likesUid.where((likeUid) => likeUid != uid).toList());
     } catch (e) {
       print('[Unlike post failed]: $e');
+      throw Exception();
+    }
+  }
+
+  Future<void> addComment({required String postId, required String content}) async{
+    try {
+      final dio = ref.read(dioProvider);
+      final response = await dio.post('/posts/$postId/commentpush', data: {
+        'content': content,
+      });
+
+    } catch (e) {
+      print('[Add comment failed]: $e');
+      throw Exception();
+    }
+  }
+
+  Future<void> postRefresh() async {
+    await getPosts(isRefresh: true);
+  }
+
+  Future<void> onePostRefresh({required String postId}) async {
+    try {
+      final dio = ref.read(dioProvider);
+      final response = await dio.get('/posts/$postId');
+
+      final post = PostModel.fromJson((response.data as Map<String, dynamic>));
+      final postIndex = state.indexWhere((post) => post.id == postId);
+      state = [
+        ...state.sublist(0, postIndex),
+        post,
+        ...state.sublist(postIndex + 1),
+      ];
+    } on Exception catch (e) {
+      // TODO
+      print('[Refresh One Post Failed]: $e');
       throw Exception();
     }
   }
