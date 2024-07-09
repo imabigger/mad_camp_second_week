@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:weather/weather.dart';
 import '../model/const.dart';
@@ -16,22 +17,30 @@ class _WeatherPageState extends State<WeatherMain> {
 
   Weather? _weather;
   Map<String, List<Weather>>? _groupedDailyWeather;
-  String city = "Seoul";
   String? _selectedDay;
 
   @override
   void initState() {
     super.initState();
     //여기에 위치 받아서 city를 업데이트 할 수 있도록 해야.
-    fetchWeather();
+    getCurrentLocationAndFetchWeather();
   }
 
-  Future<void> fetchWeather() async {
+  Future<void> getCurrentLocationAndFetchWeather() async {
     try {
-      // Fetch current weather
-      Weather weather = await _wf.currentWeatherByCityName(city);
-      // Fetch 5-day forecast
-      List<Weather> forecast = await _wf.fiveDayForecastByCityName(city);
+      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.low);
+      double late = position.latitude;
+      double long = position.longitude;
+      fetchWeather(late, long);
+    } catch (e) {
+      print("Error getting location: $e");
+    }
+  }
+
+  Future<void> fetchWeather(double latitude, double longitude) async {
+    try {
+      Weather weather = await _wf.currentWeatherByLocation(latitude, longitude);
+      List<Weather> forecast = await _wf.fiveDayForecastByLocation(latitude, longitude);
       Map<String, List<Weather>> groupedWeather = groupForecastByDay(forecast);
 
       setState(() {
@@ -59,7 +68,7 @@ class _WeatherPageState extends State<WeatherMain> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(city),
+        title: Text(_weather!.areaName!),
       ),
 
       drawer: Drawer(
@@ -76,7 +85,7 @@ class _WeatherPageState extends State<WeatherMain> {
             ),
             ListTile(
               leading: Icon(Icons.my_location),
-              title: Text('구성동'),
+              title: Text(_weather!.areaName!),
               onTap: () {
                 // 홈 화면으로 이동
               },
@@ -84,9 +93,9 @@ class _WeatherPageState extends State<WeatherMain> {
                 mainAxisSize: MainAxisSize.min,
                 // This is important to make the row fit its content
                 children: [
-                  Icon(Icons.cloud),
+                  Image(image: NetworkImage("http://openweathermap.org/img/wn/${_weather?.weatherIcon}@4x.png"),),
                   SizedBox(width: 8),
-                  Text('25°C'),
+                  Text("${_weather?.temperature?.celsius?.toStringAsFixed(0)}°C"),
                 ],
               ),
             ),
@@ -327,46 +336,49 @@ class _WeatherPageState extends State<WeatherMain> {
             ), textAlign: TextAlign.center,
           ),
           SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: _groupedDailyWeather!.keys.map((date) {
-              List<Weather> dayWeather = _groupedDailyWeather![date]!;
-              Weather firstWeather = dayWeather.first;
-              String dayStr = DateFormat('E').format(firstWeather.date!);
-              int tempMax = dayWeather.map((w) => w.tempMax!.celsius!).reduce((a, b) => a > b ? a : b).toInt();
-              int tempMin = dayWeather.map((w) => w.tempMin!.celsius!).reduce((a, b) => a < b ? a : b).toInt();
-              String icon = firstWeather.weatherIcon!;
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: _groupedDailyWeather!.keys.map((date) {
+                  List<Weather> dayWeather = _groupedDailyWeather![date]!;
+                  Weather firstWeather = dayWeather.first;
+                  String dayStr = DateFormat('E').format(firstWeather.date!);
+                  int tempMax = dayWeather.map((w) => w.tempMax!.celsius!).reduce((a, b) => a > b ? a : b).toInt();
+                  int tempMin = dayWeather.map((w) => w.tempMin!.celsius!).reduce((a, b) => a < b ? a : b).toInt();
+                  String icon = firstWeather.weatherIcon!;
 
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _selectedDay = date;
-                  });
-                },
-                child: Container(
-                  padding: EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: _selectedDay == date ? Colors.white : Colors.transparent,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        dayStr,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedDay = date;
+                      });
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: _selectedDay == date ? Colors.white : Colors.transparent,
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      SizedBox(height: 4),
-                      Image.network("http://openweathermap.org/img/wn/$icon@2x.png"),
-                      SizedBox(height: 4),
-                      Text('$tempMax° $tempMin°'),
-                    ],
-                  ),
-                ),
-              );
-            }).toList(),
+                      child: Column(
+                        children: [
+                          Text(
+                            dayStr,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Image.network("http://openweathermap.org/img/wn/$icon@2x.png"),
+                          SizedBox(height: 4),
+                          Text('$tempMax° $tempMin°'),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
           ),
         ],
       ),
@@ -385,35 +397,38 @@ class _WeatherPageState extends State<WeatherMain> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: hourlyWeather.map((weather) {
-              DateTime time = weather.date!;
-              String timeStr = DateFormat('jm').format(time);
-              int temp = weather.temperature!.celsius!.toInt();
-              String icon = weather.weatherIcon!;
-              return Container(
-                padding: EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(8),),
-                child: Column(
-                  children: [
-                    Text(
-                      timeStr,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: hourlyWeather.map((weather) {
+                DateTime time = weather.date!;
+                String timeStr = DateFormat('jm').format(time);
+                int temp = weather.temperature!.celsius!.toInt();
+                String icon = weather.weatherIcon!;
+                return Container(
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(8),),
+                  child: Column(
+                    children: [
+                      Text(
+                        timeStr,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 8),
-                    Image.network("http://openweathermap.org/img/wn/$icon@2x.png"),
-                    SizedBox(height: 8),
-                    Text('$temp°'),
-                  ],
-                ),
-              );
-            }).toList(),
+                      SizedBox(height: 8),
+                      Image.network("http://openweathermap.org/img/wn/$icon@2x.png"),
+                      SizedBox(height: 8),
+                      Text('$temp°'),
+                    ],
+                  ),
+                );
+              }).toList(),
+            ),
           ),
         ],
       ),
