@@ -68,9 +68,8 @@ class _WeatherPageState extends State<WeatherMain> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_weather!.areaName!),
+        title: Text(_weather?.areaName ?? '날씨 정보를 불러오는 중...'),
       ),
-
       drawer: Drawer(
         child: Column(
           children: <Widget>[
@@ -85,7 +84,7 @@ class _WeatherPageState extends State<WeatherMain> {
             ),
             ListTile(
               leading: Icon(Icons.my_location),
-              title: Text(_weather!.areaName!),
+              title: Text(_weather?.areaName ?? '현재 위치 불러오는 중'),
               onTap: () {
                 // 홈 화면으로 이동
               },
