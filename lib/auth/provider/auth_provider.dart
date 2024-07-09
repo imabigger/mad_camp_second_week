@@ -32,6 +32,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final user = user_model.User.fromJson(responseJson);
 
       state = state.copyWith(isLoggedIn: true, user: user, accessToken: accessToken, refreshToken: refreshToken);
+      _ref.read(dioProvider.notifier).updateDio();
       return true;
       } catch (e) {
         print('Register failed: $e');
@@ -54,6 +55,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final user = user_model.User.fromJson(responseJson);
 
       state = state.copyWith(isLoggedIn: true, user: user, accessToken: accessToken, refreshToken: refreshToken);
+      _ref.read(dioProvider.notifier).updateDio();
       return true;
     } catch (e) {
       print('Login failed: $e');
@@ -90,6 +92,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final user = user_model.User.fromJson(responseJson);
 
       state = state.copyWith(isLoggedIn: true, user: user, accessToken: accessToken, refreshToken: refreshToken, isKakaoTalkLogin: true);
+      _ref.read(dioProvider.notifier).updateDio();
       return true;
     } catch (e) {
       print('Login failed: $e');
@@ -119,6 +122,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final user = user_model.User.fromJson(responseJson);
 
       state = state.copyWith(isLoggedIn: true, user: user, accessToken: accessToken, refreshToken: refreshToken, isNaverLogin: true);
+      _ref.read(dioProvider.notifier).updateDio();
       return true;
     } catch (e) {
       print('Login failed: $e');
@@ -137,6 +141,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final refreshToken = response.data['refreshToken'];
 
       state = state.copyWith(isLoggedIn: true, accessToken: accessToken, refreshToken: refreshToken);
+      _ref.read(dioProvider.notifier).updateDio();
     } catch (e) {
       print('Login failed: $e');
       print('...Refresh token failed');
@@ -148,6 +153,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   void logOut() {
-    state = state.copyWith(isLoggedIn: false, user: null, accessToken: null, refreshToken: null);
+    state = state.copyWith(isLoggedIn: false, user: null, accessToken: null, refreshToken: null, isKakaoTalkLogin: false, isNaverLogin: false);
+    _ref.read(dioProvider.notifier).updateDio();
   }
 }

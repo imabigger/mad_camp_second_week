@@ -90,7 +90,7 @@ class _MyLoginPageState extends ConsumerState<MyLoginPage> {
                   // 이메일 로그인 버튼 클릭 시 동작 추가
                   // test code
 
-                  var isLoginSuccess = ref.read(authProvider.notifier).logInWithEmail(email: 'bigger@gmail.com', password: '1234');
+                  var isLoginSuccess = ref.read(authProvider.notifier).logInWithEmail(email: 'bigger1@gmail.com', password: '1234');
 
                 },
                 style: ElevatedButton.styleFrom(
