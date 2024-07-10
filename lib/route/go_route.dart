@@ -10,6 +10,7 @@ import 'package:kaist_summer_camp_second_week/auth/screen/my_pagebeforelogin.dar
 import 'package:kaist_summer_camp_second_week/auth/screen/my_signup.dart';
 import 'package:kaist_summer_camp_second_week/community/model/post_model.dart';
 import 'package:kaist_summer_camp_second_week/community/screen/community.dart';
+import 'package:kaist_summer_camp_second_week/community/screen/community_write.dart';
 import 'package:kaist_summer_camp_second_week/community/screen/community_written.dart';
 import 'package:kaist_summer_camp_second_week/home_screen.dart';
 import 'package:kaist_summer_camp_second_week/search/model/plant_model.dart';
@@ -46,7 +47,14 @@ final router = GoRouter(
         GoRoute(path: 'postDetail/:postId', builder: (context, state) {
           final postId = state.pathParameters['postId'];
           return CommunityWrittenPage(postId : postId!);
-        }),
+        }
+        ),
+        GoRoute(
+          path: 'write',
+          builder: (context, state) {
+            return CommunityWritePage();
+          },
+        ),
 
 
 

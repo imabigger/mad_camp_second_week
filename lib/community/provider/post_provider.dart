@@ -119,4 +119,47 @@ class PostNotifier extends StateNotifier<List<PostModel>>{
       throw Exception();
     }
   }
+
+  Future<void> onePostGet({required String postId}) async {
+    try {
+      final dio = ref.read(dioProvider);
+      final response = await dio.get('/posts/$postId');
+
+      final post = PostModel.fromJson((response.data as Map<String, dynamic>));
+      state = [
+        post,
+        ...state
+      ];
+    } on Exception catch (e) {
+      // TODO
+      print('[Refresh One Post Failed]: $e');
+      throw Exception();
+    }
+  }
+
+
+  Future<void> addPost({required String content, required String title, required int boardId, required String region, required String topic, required List<String> images}) async {
+    try {
+      final dio = ref.read(dioProvider);
+
+      final List<Map<String, String>> formattedImages = images.map((image) {
+        return {'data': image};
+      }).toList();
+
+
+      final response = await dio.post('/posts/', data: {
+        'content': content,
+        'title': title,
+        'board': boardId,
+        'region': region,
+        'topic': topic,
+        'images': formattedImages,
+      });
+
+      await onePostRefresh(postId: response.data['_id'] as String);
+    } catch (e) {
+      print('[Add post failed]: $e');
+      throw Exception();
+    }
+  }
 }
