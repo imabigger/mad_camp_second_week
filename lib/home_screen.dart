@@ -149,7 +149,6 @@ class HomeView extends ConsumerWidget {
               ),
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
-                backgroundColor: Color(0xFF7C9A36),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -162,122 +161,132 @@ class HomeView extends ConsumerWidget {
           const SizedBox(width: 8), // 오른쪽 여백 추가
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 검색창
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: TextField(
-                focusNode: FocusNode(canRequestFocus: false),
-                readOnly: true,
-                decoration: InputDecoration(
-                  hintText: '어떤 작물을 심고 싶으세요?',
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
+      body: RefreshIndicator(
+        onRefresh: () {
+          ref.read(topPlantProvider.notifier).getTopPlant();
+          ref.read(boardPostProvider(Board.values[1]).notifier).getBoardPost(6);
+          ref.read(boardPostProvider(Board.values[2]).notifier).getBoardPost(6);
+          ref.read(boardPostProvider(Board.values[3]).notifier).getBoardPost(6);
+          ref.read(boardPostProvider(Board.values[4]).notifier).getBoardPost(6);
+          return Future.value();
+        },
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 검색창
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: TextField(
+                  focusNode: FocusNode(canRequestFocus: false),
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    hintText: '어떤 작물을 심고 싶으세요?',
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
                   ),
+                  onTap: () {
+                    context.go('/search');
+                  },
                 ),
-                onTap: () {
-                  context.go('/search');
-                },
               ),
-            ),
-            const SizedBox(height: 20),
-            // 카테고리 섹션
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: GridView.count(
-                crossAxisCount: 4,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                children: [
-                  CategoryIcon(
-                    label: '전체 보기',
-                    imagePath: 'assets/i_gridview.png',
-                    onTap: () => _navigateToSearchResult(context, '전체 보기'),
-                  ),
-                  CategoryIcon(
-                    label: '곡물',
-                    imagePath: 'assets/i_crop.png',
-                    onTap: () => _navigateToSearchResult(context, '곡물'),
-                  ),
-                  CategoryIcon(
-                    label: '채소',
-                    imagePath: 'assets/i_vege.png',
-                    onTap: () => _navigateToSearchResult(context, '채소'),
-                  ),
-                  CategoryIcon(
-                    label: '과일',
-                    imagePath: 'assets/i_fruit.png',
-                    onTap: () => _navigateToSearchResult(context, '과일'),
-                  ),
-                  CategoryIcon(
-                    label: '꽃',
-                    imagePath: 'assets/i_flower.png',
-                    onTap: () => _navigateToSearchResult(context, '꽃'),
-                  ),
-                  CategoryIcon(
-                    label: '허브',
-                    imagePath: 'assets/i_herb.png',
-                    onTap: () => _navigateToSearchResult(context, '허브'),
-                  ),
-                  CategoryIcon(
-                    label: '견과류',
-                    imagePath: 'assets/i_nuts.png',
-                    onTap: () => _navigateToSearchResult(context, '견과류'),
-                  ),
-                  CategoryIcon(
-                    label: '다육식물',
-                    imagePath: 'assets/i_cactus.png',
-                    onTap: () => _navigateToSearchResult(context, '다육식물'),
-                  ),
-                ],
+              const SizedBox(height: 20),
+              // 카테고리 섹션
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: GridView.count(
+                  crossAxisCount: 4,
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  children: [
+                    CategoryIcon(
+                      label: '전체 보기',
+                      imagePath: 'assets/i_gridview.png',
+                      onTap: () => _navigateToSearchResult(context, '전체 보기'),
+                    ),
+                    CategoryIcon(
+                      label: '곡물',
+                      imagePath: 'assets/i_crop.png',
+                      onTap: () => _navigateToSearchResult(context, '곡물'),
+                    ),
+                    CategoryIcon(
+                      label: '채소',
+                      imagePath: 'assets/i_vege.png',
+                      onTap: () => _navigateToSearchResult(context, '채소'),
+                    ),
+                    CategoryIcon(
+                      label: '과일',
+                      imagePath: 'assets/i_fruit.png',
+                      onTap: () => _navigateToSearchResult(context, '과일'),
+                    ),
+                    CategoryIcon(
+                      label: '꽃',
+                      imagePath: 'assets/i_flower.png',
+                      onTap: () => _navigateToSearchResult(context, '꽃'),
+                    ),
+                    CategoryIcon(
+                      label: '허브',
+                      imagePath: 'assets/i_herb.png',
+                      onTap: () => _navigateToSearchResult(context, '허브'),
+                    ),
+                    CategoryIcon(
+                      label: '견과류',
+                      imagePath: 'assets/i_nuts.png',
+                      onTap: () => _navigateToSearchResult(context, '견과류'),
+                    ),
+                    CategoryIcon(
+                      label: '다육식물',
+                      imagePath: 'assets/i_cactus.png',
+                      onTap: () => _navigateToSearchResult(context, '다육식물'),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            // 인기 식물 섹션
-            SectionTitle(title: '농담 인기 식물'),
-            if(topPlants.length > 5)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: PlantList(plants: topPlants),
-            ),
-            // 커뮤니티 섹션
-            HomeCommunitySection(
-              title: '농담 커뮤니티에 물어보세요',
-              showMore: true,
-              onAllShowClicked: onCommunityClick,
-              boardIndex: 1,
-              posts: watcher,
-            ),
-            // 함께해요 섹션
-            HomeCommunitySection(
-              title: '함께해요',
-              showMore: true,
-              onAllShowClicked: onCommunityClick,
-              boardIndex: 2,
-              posts: ref.read(boardPostProvider(Board.values[2])),
-            ),
-            // 판매해요 섹션
-            HomeCommunitySection(
-              title: '판매해요',
-              showMore: true,
-              onAllShowClicked: onCommunityClick,
-              boardIndex: 3,
-              posts: ref.read(boardPostProvider(Board.values[3])),
-            ),
-            // 이야기 섹션
-            HomeCommunitySection(
-              title: '농담 이야기',
-              showMore: true,
-              onAllShowClicked: onCommunityClick,
-              boardIndex: 4,
-              posts: ref.read(boardPostProvider(Board.values[4])),
-            ),
-          ],
+              const SizedBox(height: 20),
+              // 인기 식물 섹션
+              SectionTitle(title: '농담 인기 식물'),
+              if(topPlants.length > 5)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: PlantList(plants: topPlants),
+              ),
+              // 커뮤니티 섹션
+              HomeCommunitySection(
+                title: '농담 커뮤니티에 물어보세요',
+                showMore: true,
+                onAllShowClicked: onCommunityClick,
+                boardIndex: 1,
+                posts: watcher,
+              ),
+              // 함께해요 섹션
+              HomeCommunitySection(
+                title: '함께해요',
+                showMore: true,
+                onAllShowClicked: onCommunityClick,
+                boardIndex: 2,
+                posts: ref.read(boardPostProvider(Board.values[2])),
+              ),
+              // 판매해요 섹션
+              HomeCommunitySection(
+                title: '판매해요',
+                showMore: true,
+                onAllShowClicked: onCommunityClick,
+                boardIndex: 3,
+                posts: ref.read(boardPostProvider(Board.values[3])),
+              ),
+              // 이야기 섹션
+              HomeCommunitySection(
+                title: '농담 이야기',
+                showMore: true,
+                onAllShowClicked: onCommunityClick,
+                boardIndex: 4,
+                posts: ref.read(boardPostProvider(Board.values[4])),
+              ),
+            ],
+          ),
         ),
       ),
     );
