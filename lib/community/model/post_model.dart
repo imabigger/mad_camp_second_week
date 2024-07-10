@@ -12,6 +12,7 @@ class PostModel {
   final List<CommentModel> comments; // 댓글을 저장하는 변수
   final DateTime createdAt; // 글이 작성된 시간을 저장하는 변수
   final List<String> imageUrl; // 이미지 url을 저장하는 변수
+  final int viewCount ; // 조회수를 저장하는 변수
 
   PostModel({
     required this.id,
@@ -25,6 +26,7 @@ class PostModel {
     required this.comments,
     required this.createdAt,
     required this.imageUrl,
+    required this.viewCount,
   });
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
@@ -40,6 +42,7 @@ class PostModel {
       comments: List<CommentModel>.from(json['comments'].map((comment) => CommentModel.fromJson(comment))),
       createdAt: DateTime.parse(json['createdAt']),
       imageUrl: List<String>.from(json['imageUrls']),
+      viewCount: json['views'] is int ? json['views'] : int.parse(json['views']),
     );
   }
 
@@ -55,6 +58,7 @@ class PostModel {
     List<CommentModel>? comments,
     DateTime? createdAt,
     List<String>? imageUrl,
+    int? viewCount,
   }) {
     return PostModel(
       id: id ?? this.id,
@@ -68,6 +72,7 @@ class PostModel {
       comments: comments ?? this.comments,
       createdAt: createdAt ?? this.createdAt,
       imageUrl: imageUrl ?? this.imageUrl,
+      viewCount: viewCount ?? this.viewCount,
     );
   }
 }

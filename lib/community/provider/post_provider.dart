@@ -162,4 +162,16 @@ class PostNotifier extends StateNotifier<List<PostModel>>{
       throw Exception();
     }
   }
+
+  Future<void> increaseViewCountPut({required String postId}) async{
+    try {
+      final dio = ref.read(dioProvider);
+      await dio.put('/posts/$postId/increment-views');
+
+      return;
+    } catch (e) {
+      print('[Increase view count failed]: $e');
+      throw Exception();
+    }
+  }
 }
