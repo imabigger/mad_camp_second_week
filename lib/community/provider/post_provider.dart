@@ -11,7 +11,7 @@ final postProvider = StateNotifierProvider<PostNotifier, List<PostModel>>((ref) 
 });
 
 class PostNotifier extends StateNotifier<List<PostModel>>{
-  StateNotifierProviderRef ref;
+  Ref ref;
   int _currentPage = 0;
   final int _limit = 20;
   bool _hasMore = true;

@@ -11,7 +11,7 @@ final queryPostProvider = StateNotifierProvider<QueryPostNotifier, List<PostMode
 });
 
 class QueryPostNotifier extends StateNotifier<List<PostModel>>{
-  StateNotifierProviderRef ref;
+  Ref ref;
   int _currentPage = 0;
   final int _limit = 20;
   bool _hasMore = true;

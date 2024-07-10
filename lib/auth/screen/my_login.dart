@@ -57,11 +57,8 @@ class _MyLoginPageState extends ConsumerState<MyLoginPage> {
             children: [
               CircleAvatar(
                 radius: 50,
-                backgroundColor: Colors.green,
-                child: const Text(
-                  '로고 올 자리',
-                  style: TextStyle(color: Colors.white),
-                ),
+                backgroundColor: Colors.green.withOpacity(0),
+                child: Image.asset('assets/default_nongdam_image.png'),
               ),
               const SizedBox(height: 32.0),
               TextField(
@@ -141,7 +138,10 @@ class _MyLoginPageState extends ConsumerState<MyLoginPage> {
                   var isLoginSuccess = ref.read(authProvider.notifier).logInWithKaKao();
 
                 },
-                icon: const Icon(Icons.chat_bubble, color: Colors.black),
+                icon: ImageIcon(
+                  AssetImage('assets/kakao_logo_15px.png'),
+                  color: Colors.black,
+                ),
                 label: const Text('카카오로 시작'),
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.black, backgroundColor: Colors.yellow,
@@ -157,7 +157,10 @@ class _MyLoginPageState extends ConsumerState<MyLoginPage> {
                   // 네이버 로그인 버튼 클릭 시 동작 추가
                   var isLoginSuccess = await ref.read(authProvider.notifier).logInWithNaver();
                 },
-                icon: const Icon(Icons.chat_bubble, color: Colors.white),
+                icon: ImageIcon(
+                  AssetImage('assets/naver_logo_15px.png'),
+                  color: Colors.white,
+                ),
                 label: const Text('네이버로 시작'),
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white, backgroundColor: Colors.green,

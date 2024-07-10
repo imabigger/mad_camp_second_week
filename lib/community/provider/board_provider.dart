@@ -12,7 +12,7 @@ final boardPostProvider = StateNotifierProviderFamily<BoardPostNotifier, List<Po
 });
 
 class BoardPostNotifier extends StateNotifier<List<PostModel>>{
-  StateNotifierProviderRef ref;
+  Ref ref;
   Board board;
 
   BoardPostNotifier({required this.ref, required this.board}) : super([]){
