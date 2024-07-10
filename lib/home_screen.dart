@@ -70,6 +70,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Colors.green,
+        showSelectedLabels: true,
+        showUnselectedLabels: false,
         currentIndex: currentScreenIndex,
         onTap: (index) {
           setState(() {

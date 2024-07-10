@@ -336,7 +336,13 @@ class _WeatherPageState extends State<WeatherMain> {
             ),
             SizedBox(height: 16),
             _buildDailyForecast(),
-            if (_selectedDay != null) _buildHourlyForecast(),
+            if (_selectedDay != null)
+              Column(
+                children: [
+                SizedBox(height: 16),
+                _buildHourlyForecast()
+                ],
+              ),
             SizedBox(height: 16),
             Container(
               padding: EdgeInsets.all(16),
@@ -500,7 +506,11 @@ class _WeatherPageState extends State<WeatherMain> {
                 return GestureDetector(
                   onTap: () {
                     setState(() {
-                      _selectedDay = date;
+                      if (_selectedDay == date) {
+                        _selectedDay = null;
+                      } else {
+                        _selectedDay = date;
+                      }
                     });
                   },
                   child: Container(
@@ -537,15 +547,15 @@ class _WeatherPageState extends State<WeatherMain> {
   Widget _buildHourlyForecast() {
     List<Weather> hourlyWeather = _groupedDailyWeather![_selectedDay]!;
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: Colors.green[100],
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 16),
+          SizedBox(height: 8),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -556,7 +566,7 @@ class _WeatherPageState extends State<WeatherMain> {
                 int temp = weather.temperature!.celsius!.toInt();
                 String icon = weather.weatherIcon!;
                 return Container(
-                  padding: EdgeInsets.all(8),
+                  padding: EdgeInsets.all(2),
                   decoration: BoxDecoration(
                     color: Colors.transparent,
                     borderRadius: BorderRadius.circular(8),),
@@ -565,13 +575,11 @@ class _WeatherPageState extends State<WeatherMain> {
                       Text(
                         timeStr,
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 8),
                       Image.network("http://openweathermap.org/img/wn/$icon@2x.png"),
-                      SizedBox(height: 8),
                       Text('$temp°'),
                     ],
                   ),
