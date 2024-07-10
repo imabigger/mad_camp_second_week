@@ -1,16 +1,55 @@
-# kaist_summer_camp_second_week
+# 농담
+> 농사꾼들의 담소를 촉진하는 커뮤니티 앱
 
-A new Flutter project.
+농담은 
+집앞의 텃밭을 소소하게 가꾸고 싶으신 분들, 시골로의 귀농을 고민하시는 분들, 화분 하나 키우시는 분들, 혼자 농사 짓기 심심하신 분들까지, 식물을 키우는 분들이라면 누구나 !!
+식물들의 데이터를 받아보고, 글을 작성하여 소통하며, 지역별 날씨까지 살펴볼 수 있는 농사꾼의, 농사꾼에 의한, 농사꾼을 위한 어플리케이션입니다 :)
 
-## Getting Started
+---
+### 농담은 … 🙊
 
-This project is a starting point for a Flutter application.
+1. 로그인을 통한 개인별 정보 관리, 2. 식물 데이터 검색 및 카테고리별 열람
+3. 다양한 이야기들을 나눌 수 있는 커뮤니티 공간, 4. 농사에서 빠질 수 없는 지역별 날씨 정보
+라는 주된 기능으로 이루어져 있습니다.
 
-A few resources to get you started if this is your first Flutter project:
+앱의 이미지는 농사와 관련된 식물과 농기구를 조합하여 만든 '농담'이라는 글씨입니다 :)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+![splash](https://github.com/imabigger/mad_camp_second_week/assets/173989725/a2ccc5e9-279b-4dcf-a60a-35b45c439cda)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
+## 1. 개인별 정보📜
+> ‘농담’에 회원가입을 하고, 로그인을 하고, 자신의 커뮤니티 기록이나 회원 등급 등을 열람할 수 있는 기능들
+- **마이페이지**: 오른쪽 상단의 프로필 버튼을 통해 마이페이지에 접근하여 로그인(회원가입)을 진행하거나, 로그인이 되어있다면 개인별 정보(회원 등급, 커뮤니티 작성글과 댓글)를 살펴보거나 로그아웃을 진행할 수 있다.
+- **로그인**: 카카오톡, 네이버, 자체 로그인이 가능하도록 구현하였다.
+- **농담가입**: 홈화면 프로필 버튼 옆의 농담가입 버튼은 로그인이 안 되어있을 때만 뜬다. 로그인이 되어있으면 사라진다.
+- **홈 화면이 먼저 등장하는 이유**: 진입 장벽을 낮추기 위해서이다. 로그인이 된 상태여야 글이나 댓글을 작성할 수 있으나, 그 외의 기능들은 (검색, 열람, 날씨 등) 로그인이 안 되어있을 때에도 사용할 수 있다.
+- [gif 넣기]
+
+## 2. 식물 데이터🌳
+> 관심 가는 식물들의 정보를 검색이나 카테고리 선택을 통해 열람할 수 있는 기능
+- **검색**: 검색결과와 일치하는 식물들의 리스트를 볼 수 있다.
+- **카테고리 아이콘**: 클릭하면 분류가 된 식물들의 리스트를 받아볼 수 있다. 선택한 항목이 최대한 중앙에 등장한다.
+- **상세 페이지**: 검색 결과나 카테고리를 통해 확인한 식물의 ListTile을 누르면 상세 페이지에서 농사와 관련된 정보 및 사진을 열람할 수 있다.
+- [gif 넣기]
+
+## 3. 소통하는 커뮤니티 공간💌
+> 여러 카테고리에 글과 댓글을 작성하며 소통할 수 있는 공간
+- **카테고리**: 커뮤니티의 글은 ‘묻고 답해요’, ‘함께 해요’, ‘판매 해요’, ‘농담 이야기’ 카테고리로 구성된다. 각각은 최신순으로 20개씩 페이지네이션을 통해 보여진다.
+- **작성**: 카테고리, 토픽, 지역을 설정할 수 있고, 사진 첨부도 가능하다.
+- **열람**: 작성된 글에 좋아요, 댓글 등을 남길 수 있고, 조회수가 올라가거나 작성 시간도 기록되게 하였다.
+- **검색**: 제목으로 검색이 가능하다.
+- [gif 넣기]
+
+## 4. 지역별 날씨 정보⛅
+> 위치 기반 현 위치의 날씨 정보 및 관심 지역의 날씨 정보를 볼 수 있는 탭
+- **API 사용**: OpenWeather API를 이용하여 다양한 정보 (예보, 일일 정보, 레이더 등)를 가져왔다.
+- **Drawer 사용**: Dialog를 이용하여 새로운 위치를 검색하고 추가하고 삭제하는 기능을 구현했다. 추가된 위치를 클릭하면 그 지역의 정보를 body에서 확인할 수 있다.
+- cf) 장장 코드 700줄의 비효율의 끝판왕 페이지.. 🥴
+- [gif 넣기]
+
+---
+# 기타
+
+- **개발 환경**: AndroidStudio (Flutter), Node.js (MongoDB), Figma, Adobe Illustrator, Github
+- **제작자**: 신서원, 이시준
+- **APK**: 
