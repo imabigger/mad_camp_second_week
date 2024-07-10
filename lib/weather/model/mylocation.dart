@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
-import 'const.dart';
+
+final String OPENWEATHER_API_KEY = dotenv.env['OPENWEATHER_API_KEY']!;
 
 class MyLocation extends StatefulWidget {
   @override

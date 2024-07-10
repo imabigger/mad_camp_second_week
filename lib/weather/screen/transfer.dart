@@ -1,14 +1,14 @@
 import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:weather/weather.dart';
+import '../model/const.dart';
+
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
-final String OPENWEATHER_API_KEY = dotenv.env['OPENWEATHER_API_KEY']!;
 
 Future<List<String>> fetchCities(String query) async {
   final response = await http.get(Uri.parse(
@@ -33,20 +33,19 @@ class WeatherMain extends StatefulWidget {
 class _WeatherPageState extends State<WeatherMain> {
   final WeatherFactory _wf = WeatherFactory(OPENWEATHER_API_KEY);
 
-  Weather? _currentLocationWeather; // 현재 위치의 날씨 정보
-  Weather? _displayedWeather; // 화면에 표시할 날씨 정보
+  Weather? _weather;
   Map<String, List<Weather>>? _groupedDailyWeather;
   String? _selectedDay;
 
   String? radarUrl;
 
-  List<String> _favoriteCities = [];
-  Map<String, Weather> _weatherInfo = {}; // 도시별 날씨 정보를 저장할 맵
-  Set<String> _loadingCities = {}; // 로딩 중인 도시를 추적
+  List<String> _favoriteCities = ['Seoul'];
+  Map<String,Weather> _weatherInfo = {}; //도시별 날씨정보 저장
 
   @override
   void initState() {
     super.initState();
+    //여기에 위치 받아서 city를 업데이트 할 수 있도록 해야.
     getCurrentLocationAndFetchWeather();
     fetchFavoriteCitiesWeather();
   }
@@ -55,8 +54,12 @@ class _WeatherPageState extends State<WeatherMain> {
     bool serviceEnabled;
     LocationPermission permission;
 
+    // Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
+      // Location services are not enabled, don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
       return Future.error('Location services are disabled.');
     }
 
@@ -64,22 +67,29 @@ class _WeatherPageState extends State<WeatherMain> {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
         return Future.error('Location permissions are denied');
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     }
 
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.low);
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.low);
     double latitude = position.latitude;
     double longitude = position.longitude;
 
-    await fetchWeather(latitude, longitude);
-    await _fetchRadarImage(latitude, longitude);
+    fetchWeather(latitude, longitude);
+    _fetchRadarImage(position.latitude, position.longitude);
   }
 
   TileCoordinates latLonToTile(double lat, double lon, int zoom) {
@@ -90,7 +100,7 @@ class _WeatherPageState extends State<WeatherMain> {
 
   Future<void> _fetchRadarImage(double lat, double lon) async {
     String apiKey = OPENWEATHER_API_KEY;
-    int zoom = 5;
+    int zoom = 5; // 원하는 줌 레벨 설정
     TileCoordinates tile = latLonToTile(lat, lon, zoom);
     String url = 'https://tile.openweathermap.org/map/precipitation_new/$zoom/${tile.x}/${tile.y}.png?appid=$apiKey';
     setState(() {
@@ -105,8 +115,7 @@ class _WeatherPageState extends State<WeatherMain> {
       Map<String, List<Weather>> groupedWeather = groupForecastByDay(forecast);
 
       setState(() {
-        _currentLocationWeather = weather;
-        _displayedWeather = weather;
+        _weather = weather;
         _groupedDailyWeather = groupedWeather;
       });
     } catch (e) {
@@ -116,24 +125,16 @@ class _WeatherPageState extends State<WeatherMain> {
 
   Future<void> fetchWeatherByCityName(String cityName) async {
     try {
-      setState(() {
-        _loadingCities.add(cityName);
-      });
-
       Weather weather = await _wf.currentWeatherByCityName(cityName);
       List<Weather> forecast = await _wf.fiveDayForecastByCityName(cityName);
       Map<String, List<Weather>> groupedWeather = groupForecastByDay(forecast);
 
       setState(() {
-        _weatherInfo[cityName] = weather;
-        _displayedWeather = weather;
+        _weather = weather;
         _groupedDailyWeather = groupedWeather;
-        _loadingCities.remove(cityName);
       });
+      print("Weather fetched for $cityName: ${weather.temperature?.celsius?.toStringAsFixed(0)}°C");
     } catch (e) {
-      setState(() {
-        _loadingCities.remove(cityName);
-      });
       print("Error fetching weather for $cityName: $e");
     }
   }
@@ -191,7 +192,6 @@ class _WeatherPageState extends State<WeatherMain> {
               onPressed: () {
                 setState(() {
                   _favoriteCities.remove(city);
-                  _weatherInfo.remove(city);
                 });
                 Navigator.of(context).pop();
               },
@@ -206,7 +206,7 @@ class _WeatherPageState extends State<WeatherMain> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_displayedWeather?.areaName ?? '날씨 정보를 불러오는 중...'),
+        title: Text(_weather?.areaName ?? '날씨 정보를 불러오는 중...'),
       ),
       drawer: Drawer(
         child: ListView(
@@ -220,27 +220,19 @@ class _WeatherPageState extends State<WeatherMain> {
             ),
             ListTile(
               leading: Icon(Icons.my_location),
-              title: Text(_currentLocationWeather?.areaName ?? '현재 위치 불러오는 중'),
-              onTap: () async {
-                if (_currentLocationWeather != null) {
-                  await fetchWeather(
-                    _currentLocationWeather!.latitude!,
-                    _currentLocationWeather!.longitude!,
-                  );
-                  setState(() {
-                    _displayedWeather = _currentLocationWeather;
-                  });
-                }
+              title: Text(_weather?.areaName ?? '현재 위치 불러오는 중'),
+              onTap: () {
+                // 홈 화면으로 이동
               },
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (_currentLocationWeather?.weatherIcon != null)
+                  if (_weather?.weatherIcon != null)
                     Image.network(
-                      "http://openweathermap.org/img/wn/${_currentLocationWeather?.weatherIcon}@4x.png",
+                      "http://openweathermap.org/img/wn/${_weather?.weatherIcon}@4x.png",
                     ),
                   SizedBox(width: 8),
-                  Text("${_currentLocationWeather?.temperature?.celsius?.toStringAsFixed(0)}°C"),
+                  Text("${_weather?.temperature?.celsius?.toStringAsFixed(0)}°C"),
                 ],
               ),
             ),
@@ -250,11 +242,10 @@ class _WeatherPageState extends State<WeatherMain> {
                 leading: Icon(Icons.location_on_outlined),
                 title: Text(city),
                 onTap: () async {
-                  await fetchWeatherByCityName(city);
+                  fetchWeatherByCityName(city);
+                  // 선택한 도시의 날씨 정보를 보여주도록 구현
                 },
-                trailing: _loadingCities.contains(city)
-                    ? CircularProgressIndicator()
-                    : weather != null
+                trailing: weather != null
                     ? Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -265,8 +256,7 @@ class _WeatherPageState extends State<WeatherMain> {
                     SizedBox(width: 8),
                     Text("${weather.temperature?.celsius?.toStringAsFixed(0)}°C"),
                   ],
-                )
-                    : Icon(Icons.error),
+                ) : CircularProgressIndicator(),
                 onLongPress: () {
                   _showDeleteCityDialog(city);
                 },
@@ -285,7 +275,7 @@ class _WeatherPageState extends State<WeatherMain> {
   }
 
   Widget _buildUI() {
-    if (_displayedWeather == null || _groupedDailyWeather == null) {
+    if (_weather == null || _groupedDailyWeather == null) {
       return const Center(
         child: CircularProgressIndicator(),
       );
@@ -296,11 +286,12 @@ class _WeatherPageState extends State<WeatherMain> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            //앱 바 다음으로 현재 날씨 보여주는 row
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Text(
-                  "${_displayedWeather?.temperature?.celsius?.toStringAsFixed(0)}°",
+                  "${_weather?.temperature?.celsius?.toStringAsFixed(0)}°",
                   style: const TextStyle(
                     color: Colors.black,
                     fontSize: 50,
@@ -311,7 +302,9 @@ class _WeatherPageState extends State<WeatherMain> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "${_displayedWeather?.tempMax?.celsius?.toStringAsFixed(0)}° / ${_displayedWeather?.tempMin?.celsius?.toStringAsFixed(0)}°",
+                      "${_weather?.tempMax?.celsius?.toStringAsFixed(
+                          0)}° / ${_weather?.tempMin?.celsius?.toStringAsFixed(
+                          0)}°",
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -327,7 +320,8 @@ class _WeatherPageState extends State<WeatherMain> {
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: NetworkImage(
-                          "http://openweathermap.org/img/wn/${_displayedWeather?.weatherIcon}@4x.png"
+                          "http://openweathermap.org/img/wn/${_weather
+                              ?.weatherIcon}@4x.png"
                       ),
                     ),
                   ),
@@ -335,9 +329,13 @@ class _WeatherPageState extends State<WeatherMain> {
               ],
             ),
             SizedBox(height: 16),
+
+            //요일별 예보 보여주는 container
             _buildDailyForecast(),
             if (_selectedDay != null) _buildHourlyForecast(),
             SizedBox(height: 16),
+
+            //일몰 일출과 오늘의 농사팁 - 커스텀 멘트 바꾸기
             Container(
               padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -367,6 +365,8 @@ class _WeatherPageState extends State<WeatherMain> {
               ),
             ),
             SizedBox(height: 16),
+
+            //자외선지수 -> 다른 걸로 바꾸기, 습도, 바람
             Container(
               padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -407,7 +407,7 @@ class _WeatherPageState extends State<WeatherMain> {
                         ),
                       ),
                       Text(
-                        "${_displayedWeather?.humidity?.toStringAsFixed(0)}%",
+                        "${_weather?.humidity?.toStringAsFixed(0)}%",
                         style: TextStyle(
                           color: Colors.grey,
                         ),
@@ -428,7 +428,7 @@ class _WeatherPageState extends State<WeatherMain> {
                         ),
                       ),
                       Text(
-                        '${_displayedWeather?.windSpeed?.toStringAsFixed(0)}m/s',
+                        '${_weather?.windSpeed?.toStringAsFixed(0)}m/s',
                         style: TextStyle(
                           color: Colors.grey,
                         ),
@@ -439,6 +439,8 @@ class _WeatherPageState extends State<WeatherMain> {
               ),
             ),
             SizedBox(height: 16),
+
+            //레이더 지도
             Container(
               width: double.infinity,
               padding: EdgeInsets.all(16),
@@ -585,7 +587,7 @@ class _WeatherPageState extends State<WeatherMain> {
   }
 
   Widget _dateTimeInfo() {
-    DateTime now = _displayedWeather!.date!;
+    DateTime now = _weather!.date!;
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -603,8 +605,8 @@ class _WeatherPageState extends State<WeatherMain> {
   }
 
   Widget _sunInfo() {
-    DateTime sunrise = _displayedWeather!.sunrise!;
-    DateTime sunset = _displayedWeather!.sunset!;
+    DateTime sunrise = _weather!.sunrise!;
+    DateTime sunset = _weather!.sunset!;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -627,6 +629,7 @@ class _WeatherPageState extends State<WeatherMain> {
       ],
     );
   }
+
 }
 
 class AddCityDialog extends StatefulWidget {

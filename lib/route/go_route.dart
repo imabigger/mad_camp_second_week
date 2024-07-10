@@ -33,7 +33,7 @@ final router = GoRouter(
         final boardIndexS = queryParams['boardIndex'];
 
         if(screenIndexS == null || boardIndexS == null){
-          return HomeScreen();
+          return WeatherMain();
         }
 
         final int screenIndex = int.parse(screenIndexS);
