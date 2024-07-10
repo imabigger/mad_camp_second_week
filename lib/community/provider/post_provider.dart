@@ -174,4 +174,10 @@ class PostNotifier extends StateNotifier<List<PostModel>>{
       throw Exception();
     }
   }
+
+  void getFrontPosts(PostModel post) {
+    if (!state.contains(post)) { //post 모델에서 정한 == 연산자 사용
+      state = [post, ...state];
+    }
+  }
 }

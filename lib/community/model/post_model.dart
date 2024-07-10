@@ -75,6 +75,16 @@ class PostModel {
       viewCount: viewCount ?? this.viewCount,
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is PostModel && other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
 }
 
 
