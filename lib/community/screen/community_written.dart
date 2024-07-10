@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kaist_summer_camp_second_week/auth/provider/auth_provider.dart';
@@ -98,7 +99,22 @@ class _CommunityWrittenPageState extends ConsumerState<CommunityWrittenPage> {
                         style: TextStyle(fontSize: 16),
                       ),
                       const SizedBox(height: 16),
-                      // 이미지 리스트
+                      /// 이미지 리스트
+                      if (post.imageUrl.isNotEmpty)
+                        SizedBox(
+                          height: 200,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: post.imageUrl.length,
+                            itemBuilder: (context, index) {
+                              final imagePath  =  '${dotenv.env['imageServerPath']}${post.imageUrl[index]}';
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 8),
+                                child: Image.network(imagePath, width: 200, fit: BoxFit.cover),
+                              );
+                            },
+                          ),
+                        ),
                       const SizedBox(height: 16),
                       Row(
                         children: [

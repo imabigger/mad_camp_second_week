@@ -1,9 +1,17 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kaist_summer_camp_second_week/auth/provider/auth_provider.dart';
+import 'package:kaist_summer_camp_second_week/community/component/board.dart';
+import 'package:kaist_summer_camp_second_week/community/provider/board_provider.dart';
 import 'package:kaist_summer_camp_second_week/community/screen/community.dart';
+import 'package:kaist_summer_camp_second_week/component/HomeSection.dart';
+import 'package:kaist_summer_camp_second_week/search/model/plant_model.dart';
+import 'package:kaist_summer_camp_second_week/search/model/plant_with_view_model.dart';
+import 'package:kaist_summer_camp_second_week/search/provider/top_plant_provider.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search.dart';
+import 'package:kaist_summer_camp_second_week/search/screen/search_detail.dart';
 import 'package:kaist_summer_camp_second_week/weather/screen/weather_main.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search_result.dart';
 import 'package:kaist_summer_camp_second_week/weather/screen/weather_main.dart';
@@ -11,7 +19,7 @@ import 'package:kaist_summer_camp_second_week/weather/screen/weather_main.dart';
 class HomeScreen extends ConsumerStatefulWidget {
   final int? firstScreenIndex;
   final int? firstBoardIndex;
-  const HomeScreen({this.firstScreenIndex, this.firstBoardIndex,super.key});
+  const HomeScreen({this.firstScreenIndex, this.firstBoardIndex, super.key});
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -30,7 +38,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     if (widget.firstScreenIndex != null) {
       currentScreenIndex = widget.firstScreenIndex!;
     }
-    if(widget.firstBoardIndex != null){
+    if (widget.firstBoardIndex != null) {
       currentBoardIndex = widget.firstBoardIndex!;
     }
     _controller = TabController(length: 3, vsync: this);
@@ -60,12 +68,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: TabBarView(
         controller: _controller,
         children: [
-          HomeView(onCommunityClick: onCommunityClick,),
-          CommunityPage(boardId: currentBoardIndex,),
+          HomeView(
+            onCommunityClick: onCommunityClick,
+          ),
+          CommunityPage(
+            boardId: currentBoardIndex,
+          ),
           WeatherMain(),
         ],
       ),
@@ -98,7 +111,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     );
   }
 
-  void onCommunityClick(int boardIndex){
+  void onCommunityClick(int boardIndex) {
     currentBoardIndex = boardIndex;
 
     setState(() {
@@ -109,10 +122,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
 class HomeView extends ConsumerWidget {
   final void Function(int) onCommunityClick;
-  const HomeView({required this.onCommunityClick,super.key});
+  const HomeView({required this.onCommunityClick, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final watcher = ref.watch(boardPostProvider(Board.values[1]));
+    final topPlants = ref.watch(topPlantProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('NongDam'),
@@ -227,41 +243,48 @@ class HomeView extends ConsumerWidget {
             const SizedBox(height: 20),
             // 인기 식물 섹션
             SectionTitle(title: '농담 인기 식물'),
+            if(topPlants.length > 5)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: PlantList(),
+              child: PlantList(plants: topPlants),
             ),
             // 커뮤니티 섹션
-            SectionTitle(title: '농담 커뮤니티에 물어보세요', showMore: true, onAllShowClicked: onCommunityClick, boardIndex: 1,),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: PlantList(),
+            HomeCommunitySection(
+              title: '농담 커뮤니티에 물어보세요',
+              showMore: true,
+              onAllShowClicked: onCommunityClick,
+              boardIndex: 1,
+              posts: watcher,
             ),
             // 함께해요 섹션
-            SectionTitle(title: '함께해요', showMore: true, onAllShowClicked: onCommunityClick, boardIndex: 2,),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: PlantList(),
+            HomeCommunitySection(
+              title: '함께해요',
+              showMore: true,
+              onAllShowClicked: onCommunityClick,
+              boardIndex: 2,
+              posts: ref.read(boardPostProvider(Board.values[2])),
             ),
             // 판매해요 섹션
-            SectionTitle(title: '판매해요', showMore: true, onAllShowClicked: onCommunityClick, boardIndex: 3,),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: PlantList(),
+            HomeCommunitySection(
+              title: '판매해요',
+              showMore: true,
+              onAllShowClicked: onCommunityClick,
+              boardIndex: 3,
+              posts: ref.read(boardPostProvider(Board.values[3])),
             ),
             // 이야기 섹션
-            SectionTitle(title: '농담 이야기', showMore: true, onAllShowClicked: onCommunityClick, boardIndex: 4,),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: PlantList(),
+            HomeCommunitySection(
+              title: '농담 이야기',
+              showMore: true,
+              onAllShowClicked: onCommunityClick,
+              boardIndex: 4,
+              posts: ref.read(boardPostProvider(Board.values[4])),
             ),
           ],
         ),
       ),
     );
   }
-
-
 }
 
 class CategoryIcon extends StatelessWidget {
@@ -311,10 +334,11 @@ void _navigateToSearchResult(BuildContext context, String label) {
 class SectionTitle extends StatelessWidget {
   final String title;
   final bool showMore;
-  final void Function(int)? onAllShowClicked;
-  final int? boardIndex;
 
-  const SectionTitle({required this.title, this.showMore = false, this.onAllShowClicked, this.boardIndex});
+  const SectionTitle(
+      {super.key,
+      required this.title,
+      this.showMore = false,});
 
   @override
   Widget build(BuildContext context) {
@@ -326,13 +350,6 @@ class SectionTitle extends StatelessWidget {
           Text(title,
               style:
                   const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          if (showMore)
-            TextButton(
-              onPressed: () {
-                onAllShowClicked!(boardIndex!);
-              },
-              child: const Text('전체보기', style: TextStyle(color: Colors.green)),
-            ),
         ],
       ),
     );
@@ -340,6 +357,12 @@ class SectionTitle extends StatelessWidget {
 }
 
 class PlantList extends StatelessWidget {
+  final List<PlantWithViewModel> plants;
+
+  const PlantList({required this.plants,super.key});
+
+
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -347,42 +370,59 @@ class PlantList extends StatelessWidget {
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: [
-          PlantCard(),
-          PlantCard(),
-          PlantCard(),
-          PlantCard(),
-          PlantCard(),
-          PlantCard(),
+          PlantCard(plant: plants[0],),
+          PlantCard(plant: plants[1],),
+          PlantCard(plant: plants[2],),
+          PlantCard(plant: plants[3],),
+          PlantCard(plant: plants[4],),
+          PlantCard(plant: plants[5],),
         ],
       ),
     );
   }
 }
 
-class PlantCard extends StatelessWidget {
+class PlantCard extends ConsumerWidget {
+  final PlantWithViewModel plant;
+
+  const PlantCard({required this.plant,super.key});
+
+
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 150,
-      margin: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.asset(
-                'assets/i_flower.png',
-                fit: BoxFit.cover,
+  Widget build(BuildContext context, WidgetRef ref) {
+    return InkWell(
+      onTap: (){
+        ref.read(topPlantProvider.notifier).incrementViewCountPut(plantName: plant.plant.name);
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SearchDetailPage(plant: plant.plant),
+          ),
+        );
+      },
+      child: Container(
+        width: 150,
+        margin: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.asset(
+                  plant.plant.imageUrl,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 5),
-          const Text('상추',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-          const Text('240,840명 검색',
-              style: TextStyle(fontSize: 12, color: Colors.grey)),
-        ],
+            const SizedBox(height: 5),
+            Text(plant.plant.name,
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+            Text('${plant.viewCount}명 검색',
+                style: TextStyle(fontSize: 12, color: Colors.grey)),
+          ],
+        ),
       ),
     );
   }
