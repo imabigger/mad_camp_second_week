@@ -13,6 +13,8 @@ class MyLoginPage extends ConsumerStatefulWidget {
 }
 
 class _MyLoginPageState extends ConsumerState<MyLoginPage> {
+  final emailTextEditingController = TextEditingController();
+  final passwordTextEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +64,7 @@ class _MyLoginPageState extends ConsumerState<MyLoginPage> {
               ),
               const SizedBox(height: 32.0),
               TextField(
+                controller: emailTextEditingController,
                 decoration: InputDecoration(
                   labelText: '이메일',
                   hintText: 'example@nongdam.com',
@@ -72,6 +75,7 @@ class _MyLoginPageState extends ConsumerState<MyLoginPage> {
               ),
               const SizedBox(height: 16.0),
               TextField(
+                controller: passwordTextEditingController,
                 decoration: InputDecoration(
                   labelText: '비밀번호',
                   hintText: '비밀번호를 입력해주세요.',
@@ -83,12 +87,25 @@ class _MyLoginPageState extends ConsumerState<MyLoginPage> {
               ),
               const SizedBox(height: 32.0),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   // 이메일 로그인 버튼 클릭 시 동작 추가
                   // test code
+                  if(emailTextEditingController.text.isEmpty || passwordTextEditingController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('모든 항목을 입력해주세요.'),
+                      ),
+                    );
+                    return;
+                  }
 
-                  var isLoginSuccess = ref.read(authProvider.notifier).logInWithEmail(email: 'bigger1@gmail.com', password: '1234');
-
+                  var isLoginSuccess = await ref.read(authProvider.notifier).logInWithEmail(email: 'bigger1@gmail.com', password: '1234');
+                  if(!isLoginSuccess) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('로그인 실패.'),
+                        ));
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white, backgroundColor: Colors.green,
