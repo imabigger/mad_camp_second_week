@@ -18,6 +18,7 @@ import 'package:kaist_summer_camp_second_week/search/model/plant_model.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search_detail.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search_result.dart';
+import 'package:kaist_summer_camp_second_week/user/provider/my_post_provider.dart';
 import 'package:kaist_summer_camp_second_week/user/screen/my_accountsetting.dart';
 import 'package:kaist_summer_camp_second_week/user/screen/my_communityrecord.dart';
 import 'package:kaist_summer_camp_second_week/user/screen/my_pageafterlogin.dart';
