@@ -28,6 +28,9 @@ import 'package:kaist_summer_camp_second_week/weather/screen/weather_main.dart';
 
 // GoRouter configuration
 final router = GoRouter(
+  redirect: (context ,state){
+    return null;
+  },
   routes: [
     GoRoute(
       path: '/',
