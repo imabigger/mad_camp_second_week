@@ -53,4 +53,5 @@
 
 - **개발 환경**: AndroidStudio (Flutter), Node.js (MongoDB), Figma, Adobe Illustrator, Github
 - **제작자**: 신서원, 이시준
-- **APK**: 
+- **APK**:
+  https://drive.google.com/file/d/1GQYcjtWXO9ARhyGNg2DqJFGVsy45s_8r/view?usp=share_link
