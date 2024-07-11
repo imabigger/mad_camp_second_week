@@ -49,6 +49,7 @@
 
 ---
 # 기타
+[Backend Repository](https://github.com/imabigger/mad_camp_second_week_backend)
 
 - **개발 환경**: AndroidStudio (Flutter), Node.js (MongoDB), Figma, Adobe Illustrator, Github
 - **제작자**: 신서원, 이시준

@@ -15,6 +15,7 @@ import 'package:kaist_summer_camp_second_week/community/screen/community_write.d
 import 'package:kaist_summer_camp_second_week/community/screen/community_written.dart';
 import 'package:kaist_summer_camp_second_week/home_screen.dart';
 import 'package:kaist_summer_camp_second_week/search/model/plant_model.dart';
+import 'package:kaist_summer_camp_second_week/search/provider/top_plant_provider.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search_detail.dart';
 import 'package:kaist_summer_camp_second_week/search/screen/search_result.dart';
@@ -27,6 +28,9 @@ import 'package:kaist_summer_camp_second_week/weather/screen/weather_main.dart';
 
 // GoRouter configuration
 final router = GoRouter(
+  redirect: (context ,state){
+    return null;
+  },
   routes: [
     GoRoute(
       path: '/',
@@ -109,6 +113,10 @@ final router = GoRouter(
                     return SearchDetailPage(
                       plant: plants[label]!.values.elementAt(index),
                     );
+                  },
+                  redirect: (context, GoRouterState state) {
+                    ProviderScope.containerOf(context).read(topPlantProvider.notifier).incrementViewCountPut(plantName: plants[state.pathParameters['label']!]!.values.elementAt(int.parse(state.pathParameters['index']!)).name);
+                    return null;
                   }),
             ]),
 

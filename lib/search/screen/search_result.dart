@@ -113,6 +113,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
                     ListTile(
                       title: Text(plantList[index]),
                       onTap: () {
+                        var plant = plants[currentLabel]!.values.elementAt(index);
+                        //ref.read(topPlantProvider.notifier).incrementViewCountPut(plantName: plant.name);
                         context.go('/search/${currentLabel}/detail/${index}');
                       },
                     ),

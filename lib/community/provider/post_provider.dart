@@ -156,9 +156,8 @@ class PostNotifier extends StateNotifier<List<PostModel>>{
         'images': formattedImages,
       });
 
-      await onePostRefresh(postId: response.data['_id'] as String);
+      await onePostGet(postId: response.data['_id'] as String);
     } catch (e) {
-      print('[Add post failed]: $e');
       throw Exception();
     }
   }

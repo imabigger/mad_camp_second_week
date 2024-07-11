@@ -100,7 +100,7 @@ class _MyLoginPageState extends ConsumerState<MyLoginPage> {
                     return;
                   }
 
-                  var isLoginSuccess = await ref.read(authProvider.notifier).logInWithEmail(email: 'bigger1@gmail.com', password: '1234');
+                  var isLoginSuccess = await ref.read(authProvider.notifier).logInWithEmail(email: emailTextEditingController.text, password: passwordTextEditingController.text);
                   if(!isLoginSuccess) {
                     ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
