@@ -157,7 +157,7 @@ class HomeView extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                 minimumSize: Size(80, 20), // 버튼의 최소 크기 설정 (너비, 높이)
               ),
             ),

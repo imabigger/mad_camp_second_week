@@ -44,7 +44,7 @@ dependencies:
   weather: ^3.1.1
   intl: ^0.18.1
   image_picker: ^1.0.8
-  permission_handler: ^11.0.1
+  permission_handler: ^11.3.1
   flutter_native_splash: ^2.4.1
 
 dev_dependencies:

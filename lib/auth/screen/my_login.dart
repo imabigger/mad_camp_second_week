@@ -29,6 +29,7 @@ class _MyLoginPageState extends ConsumerState<MyLoginPage> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
@@ -52,7 +53,7 @@ class _MyLoginPageState extends ConsumerState<MyLoginPage> {
             ),
           ],
         ),
-        body: Padding(
+        body: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
