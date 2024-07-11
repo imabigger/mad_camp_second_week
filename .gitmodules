@@ -1,0 +1,3 @@
+[submodule "backend"]
+	path = backend
+	url = https://github.com/imabigger/mad_camp_second_week_backend.git

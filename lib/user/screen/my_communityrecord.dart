@@ -126,14 +126,14 @@ class _MyCommunityRecordPageState extends ConsumerState<MyCommunityRecordPage> w
                             // 좋아요 버튼 클릭 시 동작 추가
                           },
                         ),
-                        const Text('0'),
+                        Text(post.likesUid.length.toString()),
                         IconButton(
                           icon: const Icon(Icons.comment_outlined),
                           onPressed: () {
                             // 댓글 버튼 클릭 시 동작 추가
                           },
                         ),
-                        const Text('1'),
+                        Text(post.comments.length.toString()),
                       ],
                     ),
                   ],
@@ -194,14 +194,14 @@ class _MyCommunityRecordPageState extends ConsumerState<MyCommunityRecordPage> w
                             // 좋아요 버튼 클릭 시 동작 추가
                           },
                         ),
-                        const Text('0'),
+                        Text(post.likesUid.length.toString()),
                         IconButton(
                           icon: const Icon(Icons.comment_outlined),
                           onPressed: () {
                             // 댓글 버튼 클릭 시 동작 추가
                           },
                         ),
-                        const Text('1'),
+                        Text(post.comments.length.toString()),
                       ],
                     ),
                   ],
